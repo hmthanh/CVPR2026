@@ -4,6 +4,7 @@
 \begin{figure}[h]
 	\centering
 	\label{fig:dataset}
+	\resizebox{\linewidth}{!}{
 	\begin{tikzpicture}
 		[every axis/.style={
 			ybar,
@@ -45,16 +46,16 @@
 			\legend{Entities, Relations}
 		\end{axis}
 	\end{tikzpicture}
+}
 	
 \end{figure}
 
+In this section, we outline the datasets used for empirical evaluation and assess the performance of our two proposed methods for incorporating new knowledge into the knowledge graph. To this end, we simulate the addition of new information by treating the test set as a batch of unseen triples and re-evaluate model performance using the validation set. The experimental results are summarized in \autoref{tab:resultOnFreeBase} and \autoref{tab:resultOnWordNet}.
 
-In this section, we describe the datasets used for our empirical evaluation, along with a comparison against notable existing methods as reported in \autoref{tab:graphEmbeddingTechCompare}. Additionally, we evaluate our two proposed approaches for injecting new knowledge into the knowledge graph. Specifically, we treat the test set as a batch of new knowledge to be added, and use the validation set to re-evaluate the effectiveness of our method. Detailed results are presented in \autoref{tab:resultOnFreeBase} and \autoref{tab:resultOnWordNet}.
 
-
-\begin{table}[H]
+\begin{table}[h]
 	\begin{center}
-		%		\resizebox{\linewidth}{!}{%
+				\resizebox{\linewidth}{!}{%
 			\begin{tabular}{llllll}
 				\hline
 				&          &           & \multicolumn{3}{l}{\# Edges}    \\ \cline{4-6}
@@ -67,17 +68,17 @@ In this section, we describe the datasets used for our empirical evaluation, alo
 				YAGO3-10    & 123,182   & 37        & 1,079,040   & 5,000       & 5,000  \\
 				\hline
 			\end{tabular}
-			%		}
+					}
 		\caption{Dataset Information}
 		\label{tab:datasetInfo}
 	\end{center}
 \end{table}
 
-%\section{Các tập dữ liệu huấn luyện}
-\section{Training Datasets}
+%\subsection{Các tập dữ liệu huấn luyện}
+\subsection{Training Datasets}
 \label{sec:DataTraining}
 
-\begin{figure}[H]
+\begin{figure}[h]
 	\centering
 	\label{fig:dataset_split}
 	
@@ -131,7 +132,7 @@ In our experiments, we evaluate our approach on four widely used benchmark datas
 
 Each dataset consists of a collection of triples in the form \(\langle head, relation, tail \rangle\). FB15k and WN18 are derived from the larger knowledge bases FreeBase and WordNet, respectively. However, they contain a large number of inverse relations, which allow most triples to be easily inferred. To address this issue and to better reflect real-world link prediction scenarios, FB15k-237 and WN18RR were constructed by removing such inverse relations.
 
-\subsection{FB15k Dataset}
+\subsubsection{FB15k Dataset}
 
 This dataset was constructed by the research group of A. Bordes and N. Usunier \cite{bordes2013translating} by extracting data from the Wikilinks database\footnote{https://code.google.com/archive/p/wiki-links/}. The Wikilinks database contains hyperlinks to Wikipedia articles, comprising over 40 million mentions of approximately 3 million entities. The authors extracted all facts related to a given entity that is mentioned at least 100 times across different documents, along with all facts associated with those entities (including child entities mentioned in the corresponding Wikipedia articles), excluding attributes such as dates, proper nouns, etc. 
 
@@ -139,7 +140,7 @@ Entities with degree \(n\) were normalized by converting multi-way edges into se
 
 %\ The dataset is randomly split into three subsets: the training set includes 1345 relations, 14,834 head entities, and 14,903 tail entities; the test set includes 916 relations, 11,886 head entities, and 11,285 tail entities; and the validation set includes 961 relations, 12,297 head entities, and 11,825 tail entities.
 
-\subsection{FB15k-237 Dataset}
+\subsubsection{FB15k-237 Dataset}
 
 This dataset is a subset of FB15k, constructed by Toutanova and Chen \cite{toutanova2015observed}, motivated by the observation that FB15k suffers from test leakage, where models are exposed to test facts during training. This issue arises due to the presence of duplicate or inverse relations in FB15k. FB15k-237 was created to provide a more challenging benchmark. The authors selected facts related to the 401 most frequent relations and eliminated all redundant or inverse relations. Additionally, they ensured that no entities connected in the training set were directly linked in the test and validation sets.
 
@@ -147,7 +148,7 @@ This dataset is a subset of FB15k, constructed by Toutanova and Chen \cite{touta
 
 
 
-\subsection{WN18 Dataset}
+\subsubsection{WN18 Dataset}
 
 \begin{center}
 	\resizebox{\linewidth}{!}{%
@@ -225,22 +226,22 @@ To construct WN18, the authors used WordNet as a starting point and iteratively 
 
 %Tập dữ liệu được chia ngẫu nhiên thành 3 tập: tập training với 18 relations, 40504 head entities, và 40551 tail entities, tập test gồm 18 relations, 4262 head entities, and 4338 tail entities, tập vadiation gồm 18 relations, 4349 head entities, and 4263 tail entities.
 
-\subsection{WN18RR Dataset}
+\subsubsection{WN18RR Dataset}
 
 This dataset is a subset of WN18, constructed by DeŠmers et al.\cite{dettmers2017convolutional}, who also addressed the issue of test leakage in WN18. To tackle this issue, they created the WN18RR dataset, which is significantly more challenging, by applying a similar methodology to that used in FB15k-237 \cite{toutanova2015observed}.
 
-\section{Evaluation Metrics}
+\subsection{Evaluation Metrics}
 
 In this section, we describe the evaluation metrics, experimental environment, and datasets used to assess the proposed method. These metrics are widely adopted for evaluating link prediction models on knowledge graphs. We compare our approach against four other state-of-the-art methods reported in \cite{rossi2020knowledge}.
 
-\subsubsection{Hits@K (H@K)}
+\textbf{Hits@K (H@K)}
 
 This metric measures the proportion of correct predictions whose rank is less than or equal to the threshold \(K\):
 \[
 H@K = \frac{\mid \{ q \in Q : \text{rank}(q) \leq K \} \mid}{\mid Q \mid}
 \]
 
-\subsubsection{Mean Rank (MR)}
+\textbf{Mean Rank (MR)}
 
 This metric calculates the average rank of the correct entity in the prediction. A lower value indicates better model performance:
 \[
@@ -251,35 +252,37 @@ Here, \(\mid Q \mid\) denotes the total number of queries, which equals the size
 Clearly, this metric ranges from \([1,~|\text{number of entities}|]\), as a node can connect to at most \(n-1\) other nodes plus a self-loop. However, this metric is highly sensitive to outliers, as certain relations may yield extremely low rankings for correct entities. To address this issue, our method—as well as other recent works—also adopts the Mean Reciprocal Rank (MRR) metric.
 
 
-\subsubsection{Mean Reciprocal Rank (MMR)}
+\textbf{Mean Reciprocal Rank (MMR)}
 This is the Mean Reciprocal Rank (MRR), calculated as the reciprocal of the average rank obtained for a correct prediction. Higher values indicate better model performance. Since this metric takes the reciprocal of each rank, it helps mitigate the noise sensitivity encountered in the Mean Rank (MR) metric:
 \[
 MRR =\frac{1}{\mid Q \mid} \sum_{q \in Q} \frac{1}{\text{rank}(q)}
 \]
 
-\section{Training Methodology}
+\subsection{Training Methodology}
 
-%\subsection{Training with the AnyBURL Model}
+%\subsubsection{Training with the AnyBURL Model}
 
-\subsection{Training with the KBGAT Model}
+\subsubsection{Training with the KBGAT Model}
 
 We first initialize the entity and relation embeddings using the TransE model \cite{bordes2013translating}. To construct negative (invalid) triples, we randomly replace either the head or tail entity in a valid triple with another entity sampled from the entity set.
 
 The training process is divided into two phases. The first phase serves as an encoder, transforming the initialized embeddings into new embeddings that aggregate neighborhood information using the KBGAT model. This produces updated embeddings for both entities and relations. The second phase serves as a decoder, performing link prediction by incorporating $n$-hop neighborhood information. This enables the model to better aggregate context from neighboring entities. Furthermore, we incorporate auxiliary relations to enrich the local structure in sparse graphs.
 
-We use the Adam optimizer with a learning rate of $\mu = 0.001$. The final embedding dimension for both entities and relations is set to 200. The optimal hyperparameters are determined via grid search, as detailed in \autoref{appendix:Appendix1}.
+We use the Adam optimizer with a learning rate of $\mu = 0.001$. The final embedding dimension for both entities and relations is set to 200. 
+% The optimal hyperparameters are determined via grid search, as detailed in \autoref{appendix:Appendix1}.
 
 
-\section{Experimental Results}
+\subsection{Experimental Results}
 \label{sec:Experiment}
 
 As previously mentioned, our rule-based model can be fully executed on a standard laptop. In our experiment, the machine configuration was as follows: T480, Core i5 8th Gen, 16GB RAM, 4 cores and 8 threads. The source code was implemented in Python version 3.6, utilizing only built-in Python functions without any third-party libraries. The experiments were conducted on four widely-used datasets: FB15k, FB15-237, WN18, and WN18RR. Detailed information about these datasets is provided in \autoref{sec:DataTraining} under the training datasets section.
 
-As described in \autoref{alg:GenerateRules}, the AnyBURL algorithm learns rules generated within a user-configurable time interval. Here, we set the training time to 1000 seconds (approximately 17 minutes), with saturation (SAT) set to \(0.85\), confidence threshold Q set to \(0.05\), and sample size S configured as (\(\frac{1}{10}~ \text{of the training set}\)). With this setup, our Python version of the model produced results comparable to the Java version developed by Meilicke, Christian et al. \cite{burl}, which was configured similarly but trained for only 100 seconds. The difference in training time is primarily due to performance differences between Python and Java. We chose Python because it is the primary language used in many recent artificial intelligence models and provides convenience for performance comparison and evaluation with other deep learning methods, most of which are also implemented in Python.
+%As described in \autoref{alg:GenerateRules}, 
+The AnyBURL algorithm learns rules generated within a user-configurable time interval. Here, we set the training time to 1000 seconds (approximately 17 minutes), with saturation (SAT) set to \(0.85\), confidence threshold Q set to \(0.05\), and sample size S configured as (\(\frac{1}{10}~ \text{of the training set}\)). With this setup, our Python version of the model produced results comparable to the Java version developed by Meilicke, Christian et al. \cite{burl}, which was configured similarly but trained for only 100 seconds. The difference in training time is primarily due to performance differences between Python and Java. We chose Python because it is the primary language used in many recent artificial intelligence models and provides convenience for performance comparison and evaluation with other deep learning methods, most of which are also implemented in Python.
 
 
 
-\begin{table}[H]
+\begin{table}[h]
 	\begin{center}
 		\caption{Experimental results on the FB15k and FB15k-237 datasets}
 		\label{tab:resultOnFreeBase}%
@@ -301,7 +304,7 @@ As described in \autoref{alg:GenerateRules}, the AnyBURL algorithm learns rules 
 \end{table}
 
 
-\begin{table}[H]
+\begin{table}[h]
 	\begin{center}
 		\caption{Experimental results on the WN18 and WN18RR datasets}
 		\label{tab:resultOnWordNet}%
@@ -326,11 +329,11 @@ As described in \autoref{alg:GenerateRules}, the AnyBURL algorithm learns rules 
 \autoref{tab:resultOnFreeBase} and \autoref{tab:resultOnWordNet} describe our experimental results with the \(H@K\) metrics along with the experimental results of other methods mentioned in the survey \cite{rossi2020knowledge}.
 
 
-\begin{table}[H]
+\begin{table}[h]
 	\begin{center}
 		\caption{Accuracy results of the two new knowledge addition strategies}
 		\label{tab:CompareAccuracy}%
-		\resizebox{0.8\columnwidth}{!}{%
+		\resizebox{\linewidth}{!}{%
 			\begin{tabular}{ll|l|l|l|}
 				\cline{3-5}
 				&        & \textbf{AnyBURL} & \textbf{Batch edge AnyBURL} & \textbf{Edge AnyBURL} \\ \hline
@@ -353,11 +356,11 @@ As described in \autoref{alg:GenerateRules}, the AnyBURL algorithm learns rules 
 
 \autoref{tab:CompareAccuracy} describes our experimental results for the two strategies of adding new knowledge into the graph. We evaluate the total number of generated rules, as well as the number of rules with confidence \(>= 50\%\) and \(>= 80\%\).
 
-\begin{table}[H]
+\begin{table}[h]
 	\begin{center}
 		\caption{Evaluation results on the number of rules of the two new knowledge addition strategies}
 		\label{tab:CompareRule}%
-		\resizebox{0.8\columnwidth}{!}{%
+		\resizebox{\linewidth}{!}{%
 			\begin{tabular}{ll|l|l|}
 				\cline{3-4}
 				& & \textbf{Batch edge AnyBURL} & \textbf{Edge AnyBURL}  \\ \hline

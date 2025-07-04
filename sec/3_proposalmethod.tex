@@ -11,7 +11,9 @@ In the real world, representing entities and relations as vectors can be intuiti
 For example, we know Donald Trump is 1.9 meters tall and has a wife named Melania. Thus, we could represent the entity "Donald Trump" as a vector:
 
 \[
+\resizebox{\linewidth}{!}{$
 \overrightarrow{e_\text{Trump}} = [1.9_{\text{height}}, 0_{\text{area}}, 1_{\text{wife is Melania}}, 0_{\text{wife is Taylor}}].
+$}
 \]
 
 For features that cannot be measured or have no value (e.g., \texttt{.area}), we assign 0. For categorical features without magnitude (e.g., \texttt{.wife}), we represent them using probabilities of unit features (e.g., \texttt{.wife is Melania}, \texttt{.wife is Taylor}). Therefore, any object in the real world can be \textit{embedded} as a vector in an interpretable way.
@@ -40,13 +42,17 @@ To understand graph embedding techniques, we begin with several fundamental defi
 	For example, in \autoref{fig:graphInput}, the second-order proximity \(s^{(2)}_{12}\) is the similarity between \(s^{(1)}_1\) and \(s^{(1)}_2\). As introduced above:
 	
 	\[
+	\resizebox{\linewidth}{!}{$
 	s^{(1)}_1 = \begin{bmatrix} 0, 1.2, 1.5, 0, 0, 0, 0, 0, 0 \end{bmatrix}, \quad s^{(1)}_2 = \begin{bmatrix} 1.2, 0, 0.8, 0, 0, 0, 0 , 0, 0 \end{bmatrix}.
+	$}
 	\]
 	
 	We compute the cosine similarity:
 	
 	\[
+	\resizebox{\linewidth}{!}{$
 	s^{(2)}_{12} = \cos(s^{(1)}_1, s^{(1)}_2) = 0.43, \quad s^{(2)}_{15} = \cos(s^{(1)}_1, s^{(1)}_5) = 0.
+	$}
 	\]
 	
 	We observe that the second-order proximity between \(v_1\) and \(v_5\) is 0 because they share no common 1-hop neighbors. \(v_1\) and \(v_2\) share a common neighbor \(v_3\), thus their second-order proximity \(s^{(2)}_{12}\) is greater than 0.
@@ -126,9 +132,68 @@ While the input is determined by the type of information to be preserved, the ou
 \textbf{Node Embedding}
 \label{sec:nodeEmbedding}
 
+
+
 \begin{figure}[htp]
 	\centering
-	\includegraphics[width=0.6\linewidth]{figures/graph_emb_2.png}
+	
+	
+	\begin{tikzpicture}
+		\begin{axis}[
+			axis lines=box,
+			xmin=0, xmax=3,
+			ymin=-3, ymax=3,
+			xtick={0, 0.75, 1.5, 2.25, 3},
+			ytick={-3, -1.5, 0, 1.5, 3},
+			grid=both,
+			grid style={line width=0.3pt, draw=gray!30},
+			major grid style={line width=0.4pt, draw=gray!50},
+			ticklabel style={font=\small},
+			width=8cm, height=8cm,
+			enlargelimits=false,
+			scatter/classes={
+				a={mark=*,draw=black,fill=green!50},
+				b={mark=*,draw=black,fill=orange!60},
+				c={mark=*,draw=black,fill=blue!60}
+			},
+			axis on top,
+			clip=false
+			]
+			
+			% Plot points
+			\addplot[
+			scatter, only marks, scatter src=explicit symbolic, mark size=2.8pt
+			] table[meta=class] {
+				x     y     label  class
+				0.4   1.8   1       a
+				0.6   1.2   3       a
+				0.8   2.2   2       a
+				
+				0.9   0.5   4       b
+				1.0   0.0   5       b
+				1.3   0.2   6       b
+				
+				1.7   0.3   7       c
+				1.6  -0.3   8       c
+				2.0  -0.2   9       c
+			};
+			
+			% Labels placed further above the nodes
+			\node[font=\bfseries] at (axis cs:0.4,2.1) {1};
+			\node[font=\bfseries] at (axis cs:0.6,1.5) {3};
+			\node[font=\bfseries] at (axis cs:0.8,2.5) {2};
+			
+			\node[font=\bfseries] at (axis cs:0.9,0.8) {4};
+			\node[font=\bfseries] at (axis cs:1.0,0.3) {5};
+			\node[font=\bfseries] at (axis cs:1.3,0.5) {6};
+			
+			\node[font=\bfseries] at (axis cs:1.7,0.6) {7};
+			\node[font=\bfseries] at (axis cs:1.6,-0.0) {8};
+			\node[font=\bfseries] at (axis cs:2.0,0.1) {9};
+			
+		\end{axis}
+	\end{tikzpicture}
+	
 	\caption{
 		Node embedding with each vector representing node features}
 	\label{fig:nodeEmbedding}
@@ -139,9 +204,73 @@ Node embedding represents each node as a low-dimensional vector. Nodes that are 
 \textbf{Edge Embedding}
 \label{sec:edgeEmbedding}
 
+
 \begin{figure}[htp]
 	\centering
-	\includegraphics[width=0.6\linewidth]{figures/graph_emb_3.png}
+	
+	
+	\begin{tikzpicture}
+		\begin{axis}[
+			axis lines=box,
+			xmin=0, xmax=3,
+			ymin=-3, ymax=3,
+			xtick={0, 0.75, 1.5, 2.25, 3},
+			ytick={-3, -1.5, 0, 1.5, 3},
+			grid=both,
+			grid style={line width=0.3pt, draw=gray!30},
+			major grid style={line width=0.4pt, draw=gray!50},
+			ticklabel style={font=\small},
+			width=8cm, height=8cm,
+			enlargelimits=false,
+			scatter/classes={
+				green={mark=triangle*,draw=black,fill=green!50},
+				orange={mark=triangle*,draw=black,fill=orange!60},
+				blue={mark=triangle*,draw=black,fill=blue!60},
+				yellow={mark=triangle*,draw=black,fill=yellow!80},
+				purple={mark=triangle*,draw=black,fill=violet!70}
+			},
+			axis on top,
+			clip=false
+			]
+			
+			% Plot edge embeddings as triangles
+			\addplot[
+			scatter, only marks, scatter src=explicit symbolic, mark size=4pt
+			] table[meta=class] {
+				x     y     label   class
+				0.5   0.2   e_{13}  green
+				0.7   1.1   e_{12}  green
+				1.2   1.1   e_{23}  green
+				
+				0.8   0.3   e_{45}  orange
+				1.0   0.0   e_{46}  orange
+				1.8   0.1   e_{56}  orange
+				
+				0.4  -0.8   e_{78}  blue
+				0.8  -1.3   e_{79}  blue
+				
+				2.0  -0.8   e_{67}  purple
+				2.2  -1.0   e_{34}  yellow
+			};
+			
+			% Labels near triangles
+			\node[font=\bfseries] at (axis cs:0.5,0.45) {e\textsubscript{13}};
+			\node[font=\bfseries] at (axis cs:0.7,1.35) {e\textsubscript{12}};
+			\node[font=\bfseries] at (axis cs:1.2,1.35) {e\textsubscript{23}};
+			
+			\node[font=\bfseries] at (axis cs:0.8,0.55) {e\textsubscript{45}};
+			\node[font=\bfseries] at (axis cs:1.0,0.3) {e\textsubscript{46}};
+			\node[font=\bfseries] at (axis cs:1.8,0.35) {e\textsubscript{56}};
+			
+			\node[font=\bfseries] at (axis cs:0.4,-0.55) {e\textsubscript{78}};
+			\node[font=\bfseries] at (axis cs:0.8,-1.05) {e\textsubscript{79}};
+			
+			\node[font=\bfseries] at (axis cs:2.0,-0.55) {e\textsubscript{67}};
+			\node[font=\bfseries] at (axis cs:2.2,-0.75) {e\textsubscript{34}};
+			
+		\end{axis}
+	\end{tikzpicture}
+	
 	\caption{Edge embedding with each vector representing edge features}
 	\label{fig:edgeEmbedding}
 \end{figure}
@@ -154,9 +283,51 @@ Second, some methods embed a pair of nodes as a vector to compare it with other 
 
 \textbf{Hybrid Embedding}
 
+
+
 \begin{figure}[htp]
 	\centering
-	\includegraphics[width=0.6\linewidth]{figures/graph_emb_4.png}
+	
+	\begin{tikzpicture}
+		\begin{axis}[
+			axis lines=box,
+			xmin=0, xmax=3,
+			ymin=-3, ymax=3,
+			xtick={0, 0.75, 1.5, 2.25, 3},
+			ytick={-3, -1.5, 0, 1.5, 3},
+			grid=both,
+			grid style={line width=0.3pt, draw=gray!30},
+			major grid style={line width=0.4pt, draw=gray!50},
+			ticklabel style={font=\small},
+			width=8cm, height=8cm,
+			enlargelimits=false,
+			scatter/classes={
+				green={mark=diamond*,draw=black,fill=green!50},
+				orange={mark=diamond*,draw=black,fill=orange!60},
+				blue={mark=diamond*,draw=black,fill=blue!60}
+			},
+			axis on top,
+			clip=false
+			]
+			
+			% Cluster centroids
+			\addplot[
+			scatter, only marks, scatter src=explicit symbolic, mark size=4pt
+			] table[meta=class] {
+				x     y     label       class
+				2.0   0.5   G_{1,2,3}    green
+				1.5   0.0   G_{4,5,6}    orange
+				1.0  -1.5   G_{7,8,9}    blue
+			};
+			
+			% Cluster labels near markers
+			\node[font=\bfseries\Large] at (axis cs:2.0,0.85)  {G\textsubscript{\{1,2,3\}}};
+			\node[font=\bfseries\Large] at (axis cs:1.5,0.35)  {G\textsubscript{\{4,5,6\}}};
+			\node[font=\bfseries\Large] at (axis cs:1.0,-1.15) {G\textsubscript{\{7,8,9\}}};
+			
+		\end{axis}
+	\end{tikzpicture}
+	
 	\caption{Embedding a graph substructure}
 	\label{fig:substructureEmbedding}
 \end{figure}
@@ -165,9 +336,37 @@ Hybrid embedding refers to embedding combinations of different graph components,
 
 \textbf{Whole-Graph Embedding}
 
+
 \begin{figure}[htp]
 	\centering
-	\includegraphics[width=6 cm]{figures/graph_emb_5.png}
+	
+	\begin{tikzpicture}
+		\begin{axis}[
+			axis lines=box,
+			xmin=0, xmax=3,
+			ymin=-3, ymax=3,
+			xtick={0, 0.75, 1.5, 2.25, 3},
+			ytick={-3, -1.5, 0, 1.5, 3},
+			grid=both,
+			grid style={line width=0.3pt, draw=gray!30},
+			major grid style={line width=0.4pt, draw=gray!50},
+			ticklabel style={font=\small},
+			width=8cm, height=8cm,
+			enlargelimits=false,
+			axis on top,
+			clip=false
+			]
+			
+			% Manually place a filled black hexagon
+			\node[regular polygon, regular polygon sides=6, minimum size=8pt,
+			fill=black, draw=black] at (axis cs:1.2,0.4) {};
+			
+			% Label G1 near the hexagon
+			\node[font=\bfseries\Large] at (axis cs:1.0,0.0) {G\textsubscript{1}};
+			
+		\end{axis}
+	\end{tikzpicture}
+	
 	\caption{Whole-graph embedding}
 	\label{fig:wholeGraphEmbedding}
 \end{figure}
@@ -329,7 +528,7 @@ A generative model is defined by specifying a joint distribution over input feat
 	In this method, each vertex is associated with graph semantics and should be embedded closer to semantically relevant vertices. These semantic relationships can be derived from descriptive nodes via a generative model.
 \end{itemize}
 
-\textbf{Summary}: Each graph embedding method has its own strengths and weaknesses, which have been summarized by Cai, Hongyun \cite{cai2018comprehensive} and are presented in \autoref{tab:graphEmbeddingTechCompare}. The \textit{matrix factorization} group learns embeddings by analyzing pairwise global similarities. The \textit{deep learning} group, in contrast, achieves promising results and is suitable for graph embedding because it can learn complex representations from complex graph structures.
+\textbf{Summary}: Each graph embedding method has its own strengths and weaknesses, which have been summarized by Cai, Hongyun \cite{cai2018comprehensive}. The \textit{matrix factorization} group learns embeddings by analyzing pairwise global similarities. The \textit{deep learning} group, in contrast, achieves promising results and is suitable for graph embedding because it can learn complex representations from complex graph structures.
 
 %\newcolumntype{L}{>{\arraybackslash}m{0.25\textwidth}}
 %\newcolumntype{M}{>{\arraybackslash}m{0.2\textwidth}}
@@ -468,94 +667,94 @@ At this point, we have presented the attention mechanism for computing attention
 \subsection{Graph Attention Network}
 \label{sec:GAT}
 
-%\begin{figure}[htp]
-%	\centering
-%	\resizebox{\textwidth}{!}{%
-%		\begin{tikzpicture}[
-%			entityStyle/.style={draw, color=white, thin, align=center, circle, text width=20mm},
-%			us/.style = {entityStyle, fill=amber},
-%			entity/.style={entityStyle, fill=azure},
-%			arrowStyle/.style={-latex', >=stealth },
-%			entityId/.style={draw, color=white,  thin, align=center, circle},]
-%			
-%			\node[us] (us) {\textbf{U.S}};
-%			
-%			\begin{scope}[every node/.style={entity}]
-%				\node[above left=2cm of us, xshift=-20mm] (c1) {\textbf{Donald Trump}};
-%				\node[above right=2cm of us, xshift=1cm] (c2) {\textbf{Jeff Bezos}};
-%				\node[below left=2cm of us, xshift=-20mm] (c3) {\textbf{New York}};
-%				\node[below right=2cm of us, xshift=1cm] (c4) {\textbf{Tesla Inc.}};
-%				
-%				\node[below left=3cm of c1, yshift=25mm, xshift=-15mm] (c1x) {\textbf{Melania Trump}};
-%				\node[above left=3cm of c3, yshift=-25mm, xshift=-15mm] (c3x) {\textbf{Tom Cruise}};
-%				
-%				%\node[left=1cm of c1x, yshift=25mm, xshift=-15mm] (c8) {\textbf{Thanh}};
-%			\end{scope}
-%			
-%			%\draw[->, line width=0.8mm, azure] (c8) -> (c1x);
-%			%\path[arrowStyle] (c8)--node[rotate=-31, yshift=4mm]{friend\_of} %node[rotate=-31, yshift=-3mm]{} (c1x);
-%			
-%			\foreach \value in {1,...,4}
-%			\draw[->, line width=0.8mm, azure] (c\value) -> (us);
-%			\foreach \value in {1,3}
-%			\draw[->, line width=0.8mm, azure] (c\value x) -> (c\value);
-%			
-%			\foreach \value in {1,3}
-%			\draw[->, line width=0.8mm, azure!60, dash pattern=on 3mm off 1mm, postaction={decorate}] (c\value x) -> (us);
-%			
-%			\path[arrowStyle] (c1)--node[rotate=-31, yshift=4mm]{president\_of} node[rotate=-31, yshift=-3mm]{$\alpha_{i4}$} (us);
-%			
-%			\path[arrowStyle] (c3)--node[rotate=30, yshift=4mm]{state\_of} node[rotate=30, yshift=-4mm]{$\alpha_{i3}$} (us);
-%			
-%			\path[arrowStyle] (c2)--node[rotate=41, yshift=4mm]{richest\_of} node[rotate=41, yshift=-4mm]{$\alpha_{i1}$} (us);
-%			
-%			\path[arrowStyle] (c4)--node[rotate=-41, yshift=4mm]{founded\_in} node[rotate=-41, yshift=-4mm]{$\alpha_{i2}$} (us);
-%			
-%			\path[arrowStyle] (c1x)--node[rotate=15, yshift=4mm]{wife\_of} (c1);
-%			\path[arrowStyle] (c3x)--node[rotate=-15, yshift=4mm]{born\_in} (c3);
-%			
-%			\path[arrowStyle] (c1x)--node[rotate=-8, yshift=4mm]{\textbf{first\_lady}} node[rotate=-8, yshift=-3mm]{$\alpha_{i5}$} (us);
-%			\path[arrowStyle] (c3x)--node[rotate=8, yshift=4mm]{\textbf{native\_of}} node[rotate=8, yshift=-3mm]{$\alpha_{i6}$} (us);
-%			
-%			%%%%%%%%%%%
-%			\node[entityId][fill=amber][right=11cm of us] (country) {$e_3$};
-%			\path[arrowStyle] (us)--node[yshift=2mm]{\LARGE $\rightarrow$} (country);
-%			
-%			\begin{scope}[every node/.style={entityId, fill=azure}]
-%				\node[above left=1cm of country, xshift=-5mm] (c1s) {$e_2$};
-%				\node[above right=1cm of country, xshift=5mm] (c2s) {$e_4$};
-%				\node[below left=1cm of country, xshift=-5mm] (c3s) {$e_6$};
-%				\node[below right=1cm of country, xshift=5mm] (c4s) {$e_7$};
-%				
-%				\node[below left=1.5cm of c1s, yshift=15mm, xshift=-5mm] (c1xs) {$e_1$};
-%				\node[above left=1.5cm of c3s, yshift=-15mm, xshift=-5mm] (c3xs) {$e_5$};
-%			\end{scope}
-%			\foreach \value in {1,...,4}
-%			\draw[->, line width=0.8mm, azure] (c\value s) -> (country);
-%			\foreach \value in {1,3}
-%			\draw[->, line width=0.8mm, azure] (c\value xs) -> (c\value s);
-%			
-%			\foreach \value in {1,3}
-%			\draw[->, line width=0.8mm, azure!60, dash pattern=on 3mm off 1mm, postaction={decorate}] (c\value xs) -> (country);
-%			
-%			\path[arrowStyle] (c1s)--node[rotate=-31, yshift=2mm]{$r_2$} (country);
-%			
-%			\path[arrowStyle] (c3s)--node[rotate=30, yshift=2mm]{$r_5$} (country);
-%			
-%			\path[arrowStyle] (c2s)--node[rotate=41, yshift=2mm]{$r_3$} (country);
-%			
-%			\path[arrowStyle] (c4s)--node[rotate=-41, yshift=2mm]{$r_6$} (country);
-%			
-%			\path[arrowStyle] (c1xs)--node[rotate=15, yshift=2mm]{$r_1$} (c1s);
-%			\path[arrowStyle] (c3xs)--node[rotate=-15, yshift=2mm]{$r_4$} (c3s);
-%			
-%			\path[arrowStyle] (c1xs)--node[rotate=-8, yshift=2mm]{$r_7$} (country);
-%			\path[arrowStyle] (c3xs)--node[rotate=8, yshift=2mm]{$r_8$} (country);
-%		\end{tikzpicture}
-%	}
-%	\caption{Knowledge graph and normalized attention coefficients of the entity}
-%	\label{fig:graphExample}
-%\end{figure}
+\begin{figure*}[htp]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{tikzpicture}[
+			entityStyle/.style={draw, color=white, thin, align=center, circle, text width=20mm},
+			us/.style = {entityStyle, fill=amber},
+			entity/.style={entityStyle, fill=azure},
+			arrowStyle/.style={-latex', >=stealth },
+			entityId/.style={draw, color=white,  thin, align=center, circle},]
+			
+			\node[us] (us) {\textbf{U.S}};
+			
+			\begin{scope}[every node/.style={entity}]
+				\node[above left=2cm of us, xshift=-20mm] (c1) {\textbf{Donald Trump}};
+				\node[above right=2cm of us, xshift=1cm] (c2) {\textbf{Jeff Bezos}};
+				\node[below left=2cm of us, xshift=-20mm] (c3) {\textbf{New York}};
+				\node[below right=2cm of us, xshift=1cm] (c4) {\textbf{Tesla Inc.}};
+				
+				\node[below left=3cm of c1, yshift=25mm, xshift=-15mm] (c1x) {\textbf{Melania Trump}};
+				\node[above left=3cm of c3, yshift=-25mm, xshift=-15mm] (c3x) {\textbf{Tom Cruise}};
+				
+				%\node[left=1cm of c1x, yshift=25mm, xshift=-15mm] (c8) {\textbf{Thanh}};
+			\end{scope}
+			
+			%\draw[->, line width=0.8mm, azure] (c8) -> (c1x);
+			%\path[arrowStyle] (c8)--node[rotate=-31, yshift=4mm]{friend\_of} %node[rotate=-31, yshift=-3mm]{} (c1x);
+			
+			\foreach \value in {1,...,4}
+			\draw[->, line width=0.8mm, azure] (c\value) -> (us);
+			\foreach \value in {1,3}
+			\draw[->, line width=0.8mm, azure] (c\value x) -> (c\value);
+			
+			\foreach \value in {1,3}
+			\draw[->, line width=0.8mm, azure!60, dash pattern=on 3mm off 1mm, postaction={decorate}] (c\value x) -> (us);
+			
+			\path[arrowStyle] (c1)--node[rotate=-31, yshift=4mm]{president\_of} node[rotate=-31, yshift=-3mm]{$\alpha_{i4}$} (us);
+			
+			\path[arrowStyle] (c3)--node[rotate=30, yshift=4mm]{state\_of} node[rotate=30, yshift=-4mm]{$\alpha_{i3}$} (us);
+			
+			\path[arrowStyle] (c2)--node[rotate=41, yshift=4mm]{richest\_of} node[rotate=41, yshift=-4mm]{$\alpha_{i1}$} (us);
+			
+			\path[arrowStyle] (c4)--node[rotate=-41, yshift=4mm]{founded\_in} node[rotate=-41, yshift=-4mm]{$\alpha_{i2}$} (us);
+			
+			\path[arrowStyle] (c1x)--node[rotate=15, yshift=4mm]{wife\_of} (c1);
+			\path[arrowStyle] (c3x)--node[rotate=-15, yshift=4mm]{born\_in} (c3);
+			
+			\path[arrowStyle] (c1x)--node[rotate=-8, yshift=4mm]{\textbf{first\_lady}} node[rotate=-8, yshift=-3mm]{$\alpha_{i5}$} (us);
+			\path[arrowStyle] (c3x)--node[rotate=8, yshift=4mm]{\textbf{native\_of}} node[rotate=8, yshift=-3mm]{$\alpha_{i6}$} (us);
+			
+			%%%%%%%%%%%
+			\node[entityId][fill=amber][right=11cm of us] (country) {$e_3$};
+			\path[arrowStyle] (us)--node[yshift=2mm]{\LARGE $\rightarrow$} (country);
+			
+			\begin{scope}[every node/.style={entityId, fill=azure}]
+				\node[above left=1cm of country, xshift=-5mm] (c1s) {$e_2$};
+				\node[above right=1cm of country, xshift=5mm] (c2s) {$e_4$};
+				\node[below left=1cm of country, xshift=-5mm] (c3s) {$e_6$};
+				\node[below right=1cm of country, xshift=5mm] (c4s) {$e_7$};
+				
+				\node[below left=1.5cm of c1s, yshift=15mm, xshift=-5mm] (c1xs) {$e_1$};
+				\node[above left=1.5cm of c3s, yshift=-15mm, xshift=-5mm] (c3xs) {$e_5$};
+			\end{scope}
+			\foreach \value in {1,...,4}
+			\draw[->, line width=0.8mm, azure] (c\value s) -> (country);
+			\foreach \value in {1,3}
+			\draw[->, line width=0.8mm, azure] (c\value xs) -> (c\value s);
+			
+			\foreach \value in {1,3}
+			\draw[->, line width=0.8mm, azure!60, dash pattern=on 3mm off 1mm, postaction={decorate}] (c\value xs) -> (country);
+			
+			\path[arrowStyle] (c1s)--node[rotate=-31, yshift=2mm]{$r_2$} (country);
+			
+			\path[arrowStyle] (c3s)--node[rotate=30, yshift=2mm]{$r_5$} (country);
+			
+			\path[arrowStyle] (c2s)--node[rotate=41, yshift=2mm]{$r_3$} (country);
+			
+			\path[arrowStyle] (c4s)--node[rotate=-41, yshift=2mm]{$r_6$} (country);
+			
+			\path[arrowStyle] (c1xs)--node[rotate=15, yshift=2mm]{$r_1$} (c1s);
+			\path[arrowStyle] (c3xs)--node[rotate=-15, yshift=2mm]{$r_4$} (c3s);
+			
+			\path[arrowStyle] (c1xs)--node[rotate=-8, yshift=2mm]{$r_7$} (country);
+			\path[arrowStyle] (c3xs)--node[rotate=8, yshift=2mm]{$r_8$} (country);
+		\end{tikzpicture}
+	}
+	\caption{Knowledge graph and normalized attention coefficients of the entity}
+	\label{fig:graphExample}
+\end{figure*}
 
 With the success of the \textit{multi-head attention mechanism} in natural language processing, it has also been studied for applications in image processing models \cite{ramachandran2019stand}. Consequently, the multi-head attention mechanism has been explored for replacing convolutional operations in knowledge graph embedding models, such as Graph Convolutional Networks (GCNs \cite{kipf2016semi}). In this section, we present in detail how the attention mechanism from \ref{sec:attentionMechanism} is applied to graph embedding via the Graph Attention Network (GAT \cite{velivckovic2017graph}) method.
 
@@ -650,10 +849,13 @@ where $\sigma$ is any non-linear activation function, and $\alpha_{ij}^h$ is the
 
 In a knowledge graph, a single entity cannot fully represent an edge, as the entity can play multiple roles depending on the type of relation. For example, in \autoref{fig:graphExample}, Donald Trump serves both as a president and as a husband. To address this issue, the knowledge graph attention-based embedding model — KBGAT (graph attention based embeddings \cite{nathani2019learning}) — improves upon the GAT model by incorporating additional information from \textit{relations and neighboring node features} into the attention mechanism. In this section, we will detail the KBGAT model. The structure of KBGAT follows an encoder-decoder framework, where the encoder is implemented using the Graph Attention Network (GAT), and the decoder uses the ConvKB model for prediction. The steps of the KBGAT model are illustrated in \ref{eq:KBGATProcess}.
 
-\begin{equation}
+\begin{equation*}
 	\label{eq:KBGATProcess}
-	entities \xrightarrow{\text{Embedding}^{\ref{sec:initTransE}}} \overrightarrow{e_{\text{TransE}}} \xrightarrow{\text{Embedding} ^{\ref{sec:encodeKBGAT}}} \overrightarrow{e_{\text{KBGAT}}} \xrightarrow{\text{ConvKB}^{\ref{sec:predictionConvKB}}} e_{\text{prob}}
-\end{equation}
+	\resizebox{\linewidth}{!}{$
+		entities \xrightarrow{\text{Embedding}^{\ref{sec:initTransE}}} \overrightarrow{e_{\text{TransE}}} \xrightarrow{\text{Embedding}^{\ref{sec:encodeKBGAT}}} \overrightarrow{e_{\text{KBGAT}}} \xrightarrow{\text{ConvKB}^{\ref{sec:predictionConvKB}}} e_{\text{prob}}
+		$}
+\end{equation*}
+
 
 First, the embedding vectors of each entity are initialized using the TransE model to capture the spatial characteristics among nodes and obtain the initial embeddings. These embeddings are then further trained using an encoder model to capture neighborhood features, resulting in updated embeddings. Finally, these embeddings are passed through a prediction layer using the ConvKB model. All equations presented here are based on those in the work of Nathani, Deepak\cite{nathani2019learning}.
 
@@ -663,40 +865,42 @@ First, the embedding vectors of each entity are initialized using the TransE mod
 \subsubsection{Embedding Initialization}
 \label{sec:initTransE}
 
-%\begin{figure}[htp]
-%	\centering
-%	\begin{tikzpicture}[
-%		arrow/.style={->,thick},
-%		vector/.style={arrow, ultra thick},
-%		dashLine/.style={->, thin, dash pattern=on 1mm off 0.5mm},
-%		formal/.style={font=\sffamily}]
-%		\coordinate (root) at (0,0);
-%		\coordinate [formal, label=above left:$\overrightarrow{\text{relation}}$] (c1) at (-1.5, 3);
-%		\coordinate [formal, label=above:$\overrightarrow{\text{tail}_{\text{invalid}}}$] (c2) at (3.5, 5);
-%		\coordinate [formal, label=right:$\overrightarrow{\text{tail}_{\text{valid}}}$] (c3) at (3.5, 4);
-%		\coordinate [formal, label=above right :$\overrightarrow{\text{head}_{\text{invalid}}}$] (c4) at (5, 2);
-%		\coordinate [formal, label=right:$\overrightarrow{\text{head}_{\text{valid}}}$] (c5) at (5, 1);
-%		
-%		\draw [arrow] ([yshift=-2em] root) -> (0, 5) node (yaxis)[above] {$y$};
-%		\draw [arrow] ([xshift=-5em] root) -> (5, 0) node (xaxis)[above] {$x$};
-%		
-%		\foreach \x in {3, 5}
-%		{\draw [vector, color=azure] (root) -> (c\x);}
-%		
-%		\foreach \x in {2, 4}
-%		{\draw [vector, color=awesome] (root) -> (c\x);}
-%		
-%		\draw [vector, color=amber] (root) -> (c1);
-%		
-%		\foreach \x in {1, 4}
-%		{\draw [dashLine, color=darkpastelgreen] (c\x) -> (c2);}
-%		
-%		\foreach \x in {1, 5}
-%		{\draw [dashLine, color=darkpastelgreen] (c\x) -> (c3);}
-%	\end{tikzpicture}
-%	\caption{Illustration of embedding vectors in the TransE model}
-%	\label{fig:TransEAnimation}
-%\end{figure}
+\begin{figure}[htp]
+	\centering
+	\resizebox{\linewidth}{!}{
+	\begin{tikzpicture}[
+		arrow/.style={->,thick},
+		vector/.style={arrow, ultra thick},
+		dashLine/.style={->, thin, dash pattern=on 1mm off 0.5mm},
+		formal/.style={font=\sffamily}]
+		\coordinate (root) at (0,0);
+		\coordinate [formal, label=above left:$\overrightarrow{\text{relation}}$] (c1) at (-1.5, 3);
+		\coordinate [formal, label=above:$\overrightarrow{\text{tail}_{\text{invalid}}}$] (c2) at (3.5, 5);
+		\coordinate [formal, label=right:$\overrightarrow{\text{tail}_{\text{valid}}}$] (c3) at (3.5, 4);
+		\coordinate [formal, label=above right :$\overrightarrow{\text{head}_{\text{invalid}}}$] (c4) at (5, 2);
+		\coordinate [formal, label=right:$\overrightarrow{\text{head}_{\text{valid}}}$] (c5) at (5, 1);
+		
+		\draw [arrow] ([yshift=-2em] root) -> (0, 5) node (yaxis)[above] {$y$};
+		\draw [arrow] ([xshift=-5em] root) -> (5, 0) node (xaxis)[above] {$x$};
+		
+		\foreach \x in {3, 5}
+		{\draw [vector, color=azure] (root) -> (c\x);}
+		
+		\foreach \x in {2, 4}
+		{\draw [vector, color=awesome] (root) -> (c\x);}
+		
+		\draw [vector, color=amber] (root) -> (c1);
+		
+		\foreach \x in {1, 4}
+		{\draw [dashLine, color=darkpastelgreen] (c\x) -> (c2);}
+		
+		\foreach \x in {1, 5}
+		{\draw [dashLine, color=darkpastelgreen] (c\x) -> (c3);}
+	\end{tikzpicture}
+	}
+	\caption{Illustration of embedding vectors in the TransE model}
+	\label{fig:TransEAnimation}
+\end{figure}
 
 Similar to the Word2Vec method \cite{mikolov2013efficient}, the model \textit{Translating Embeddings for Modeling Multi-relational Data} (TransE \cite{bordes2013translating}) belongs to the group of geometric embedding methods that transform entities and relations in a knowledge graph into output embedding vectors such that:
 \begin{equation}
@@ -709,7 +913,7 @@ Initially, the entity and relation embedding vectors are randomly initialized us
 
 Next, we perform sampling from the training dataset to obtain a batch of valid triples ($S_{\text{batch}}$). For each such triple, we sample an invalid triple by replacing either the head or the tail entity with a random entity from the entity set, yielding a batch of invalid triples ($S'_{\text{batch}}$). We then pair each valid triple with an invalid one to form the training batch ($T_{\text{batch}}$). Finally, we update the embedding vectors to satisfy the condition in \ref{eq:conditionTransE}.
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\caption{TransE Embedding Learning Algorithm \protect\cite{bordes2013translating}}\label{alg:TransE}
 	\begin{algorithmic}[1]
 		\Statex \textbf{Input} :
@@ -757,44 +961,44 @@ To achieve the goal of learning embedding vectors such that $\overrightarrow{h} 
 
 
 % \begin{figure}[htp]
-	% 	\centering
-	% 	\begin{tikzpicture}[
-		% 		arrow/.style={->,thick},
-		% 		vector/.style={arrow, ultra thick},
-		% 		mapping/.style={->, thin},
-		% 		distArrow/.style={thin, <->},
-		% 		dashLine/.style={very thin, dash pattern=on 1mm off 0.5mm},
-		% 		formal/.style={font=\sffamily}]
-		
-		% 		\coordinate (root) at (0,0);
-		% 		\coordinate [formal, label=above left:$\overrightarrow{h'}$] (c1) at (-1.5, 3);
-		% 		\coordinate [formal, label=above:$\overrightarrow{t}$] (c2) at (2, 5);
-		% 		\coordinate [formal, label=above:$\overrightarrow{t'}$] (c3) at (3.2, 4.5);
-		% 		\coordinate [formal, label=above right :$\overrightarrow{h'} + \overrightarrow{r}$] (c4) at (4.5, 4);
-		% 		\coordinate [formal, label=right:$\overrightarrow{r}$] (c5) at (6, 1);
-		
-		% 		\draw [arrow] ([yshift=-1.5em] root) -> (0, 5) node (yaxis)[above] {$y$};
-		% 		\draw [arrow] ([xshift=-5em] root) -> (7, 0) node (xaxis)[above] {$x$};
-		
-		% 		\foreach \x in {1, 5}
-		% 		{\draw [vector, color=black] (root) -> (c1);}
-		% 		{\draw [vector, color=black] (root) -> (c2);}
-		% 		{\draw [vector, color=awesome] (root) -> (c3);}
-		% 		{\draw [vector, color=azure] (root) -> (c4);}
-		% 		{\draw [vector, color=black] (root) -> (c5);}
-		
-		% 		\draw [dashLine] (c2) -> (2, -1.5) node (mapc2){};
-		% 		\draw [dashLine] (c4) -> (4.5, -1.5) node (mapc4){};
-		
-		% 		\draw [dashLine, color=amber] (c3) -> (3.2, -0.7) node (mapc3){};
-		% 		\draw [dashLine, color=amber] (c4) -> (4.5, -0.7) node (mapc4){};
-		
-		% 		\draw [distArrow] (2, -1.5) node (map1c2) {} -> (3.5, -1.5) node (alpha)[yshift=2mm] {$\Delta$} -> (4.5, -1.5) node (mapc4){};
-		% 		\draw [distArrow] (3.2, -0.7) node (map1c3) {} -> (4, -0.7) node (alpha)[yshift=2mm] {$\Delta'$} ->  (4.5, -0.7) node (mapc4){};
-		% 	\end{tikzpicture}
-	% 	\caption{Minh học về độ đo hàm loss trong TransE}
-	% 	
-	% \end{figure}
+% 	\centering
+% 	\begin{tikzpicture}[
+	% 		arrow/.style={->,thick},
+	% 		vector/.style={arrow, ultra thick},
+	% 		mapping/.style={->, thin},
+	% 		distArrow/.style={thin, <->},
+	% 		dashLine/.style={very thin, dash pattern=on 1mm off 0.5mm},
+	% 		formal/.style={font=\sffamily}]
+	
+	% 		\coordinate (root) at (0,0);
+	% 		\coordinate [formal, label=above left:$\overrightarrow{h'}$] (c1) at (-1.5, 3);
+	% 		\coordinate [formal, label=above:$\overrightarrow{t}$] (c2) at (2, 5);
+	% 		\coordinate [formal, label=above:$\overrightarrow{t'}$] (c3) at (3.2, 4.5);
+	% 		\coordinate [formal, label=above right :$\overrightarrow{h'} + \overrightarrow{r}$] (c4) at (4.5, 4);
+	% 		\coordinate [formal, label=right:$\overrightarrow{r}$] (c5) at (6, 1);
+	
+	% 		\draw [arrow] ([yshift=-1.5em] root) -> (0, 5) node (yaxis)[above] {$y$};
+	% 		\draw [arrow] ([xshift=-5em] root) -> (7, 0) node (xaxis)[above] {$x$};
+	
+	% 		\foreach \x in {1, 5}
+	% 		{\draw [vector, color=black] (root) -> (c1);}
+	% 		{\draw [vector, color=black] (root) -> (c2);}
+	% 		{\draw [vector, color=awesome] (root) -> (c3);}
+	% 		{\draw [vector, color=azure] (root) -> (c4);}
+	% 		{\draw [vector, color=black] (root) -> (c5);}
+	
+	% 		\draw [dashLine] (c2) -> (2, -1.5) node (mapc2){};
+	% 		\draw [dashLine] (c4) -> (4.5, -1.5) node (mapc4){};
+	
+	% 		\draw [dashLine, color=amber] (c3) -> (3.2, -0.7) node (mapc3){};
+	% 		\draw [dashLine, color=amber] (c4) -> (4.5, -0.7) node (mapc4){};
+	
+	% 		\draw [distArrow] (2, -1.5) node (map1c2) {} -> (3.5, -1.5) node (alpha)[yshift=2mm] {$\Delta$} -> (4.5, -1.5) node (mapc4){};
+	% 		\draw [distArrow] (3.2, -0.7) node (map1c3) {} -> (4, -0.7) node (alpha)[yshift=2mm] {$\Delta'$} ->  (4.5, -0.7) node (mapc4){};
+	% 	\end{tikzpicture}
+% 	\caption{Minh học về độ đo hàm loss trong TransE}
+% 	
+% \end{figure}
 
 
 \begin{figure}[htp]
@@ -820,216 +1024,216 @@ Therefore, during training, we aim for $\Delta'$ to be as large as possible rela
 After obtaining the embedding vectors that capture spatial features of the knowledge graph, these embeddings are passed through the next embedding layer to further aggregate the neighborhood information of each entity.
 
 
-%\begin{figure}[htp]
-%	\centering
-%	\resizebox{\textwidth}{!}{%
-%		\begin{tikzpicture}[
-%			emb/.style={draw, circle,minimum width=.1em, thin, anchor=center},
-%			entityInit/.style={emb, fill=amber},
-%			relationInit/.style={emb, fill=azure},
-%			entityEmb/.style={emb, fill=gray},
-%			relationEmb/.style={emb, fill=deepcarminepink},
-%			entityPretrain/.style={emb, fill=deepmagenta},
-%			entityOut/.style={emb, fill=deepskyblue},
-%			box/.style={draw,rectangle, fill=none},
-%			embBox/.style={box ,rounded corners=0.2em, minimum width=1.3em},
-%			layerBox/.style={color=azure!80, box ,very thick,rounded corners=0.2em, minimum width=1.3em},
-%			textbox/.style={box,rounded corners=0.3em, fill=none, align=center, execute at begin node=\setlength{\baselineskip}{1em}},
-%			arrowStrong/.style={thick,->,>=stealth},
-%			arrowDash/.style={thick, ->,>=stealth, dash pattern=on 1.5mm off 0.7mm, postaction={decorate}},
-%			row/.style={draw, rectangle, font=\fontsize{0.6em}{1}\sffamily, align=center, text width=3.9em},
-%			arrowStyle/.style={-latex', font=\sffamily},
-%			mydot/.style={draw, circle, minimum size=0.1em, scale=0.2},
-%			]
-%			% 5
-%			% Root
-%			\draw node[textbox][text width=5.7em] (graphAttention2) {\small Graph Attention Layer $2_{\ref{eq:graphAttention2}}$};
-%			
-%			\draw node[textbox][minimum width=9.5em, minimum height=21em, left=1.5em of graphAttention2] (layer3) {};
-%			
-%			\draw node[embBox][minimum height=20.3em, left=2em of graphAttention2] (box10) {};
-%			\begin{scope}[every node/.style={below=0mm of box10.center}]
-%				\foreach \x in {1,...,12}
-%				{\draw node[entityEmb][yshift=(\x-4)*1.1em+0.55em] (ex10\x) {};}
-%				
-%				\foreach \x in {1,...,6}
-%				{\draw node[relationEmb](ey10\x)[yshift=-(\x+3)*1.1em+0.55em]{};}
-%			\end{scope}
-%			
-%			\draw node[embBox][minimum height=7em, left=2em of box10, yshift=5em] (box7) {};
-%			\draw node[embBox][minimum height=7em, left=2em of box10, yshift=-5em] (box9) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,6}
-%				{\draw node[entityEmb](e7\x)[yshift=(\x-3)*1.1em, below=0mm of box7.center]{};}
-%				
-%				\foreach \x in {1,...,6}
-%				{\draw node[relationEmb](e9\x)[yshift=(\x-3)*1.1em, below=0mm of box9.center]{};}
-%			\end{scope}
-%			
-%			\draw node[embBox][minimum height=4em, left=2em of box7, yshift=2.5em] (box5) {};
-%			\draw node[embBox][minimum height=4em, left=2em of box7, yshift=-2.5em] (box6) {};
-%			\draw node[embBox][minimum height=5em, left=2em of box9] (box8) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,3}
-%				{\draw node[entityEmb](e5\x)[yshift=(\x-2)*1.1em+0.55em, below=0mm of box5.center]{};}
-%				
-%				\foreach \x in {1,...,3}
-%				{\draw node[entityEmb](e6\x)[yshift=-(\x-2)*1.1em+0.55em, below=0mm of box6.center]{};}
-%				
-%				\foreach \x in {1,...,4}
-%				{\draw node[relationInit](e8\x)[yshift=(\x-2)*1.1em, below=0mm of box8.center]{};}
-%			\end{scope}
-%			\draw node[layerBox][minimum height=8em,minimum width=5.5em, left=1.5em of box10, yshift=-5em] (fc1) {};
-%			
-%			% Left
-%			\begin{scope}[every node/.style={left=2em of layer3}]
-%				\draw node[textbox][yshift=5.5em, text width=4em] (attentionHead1) {\small Attention Head 1};
-%				\draw node[textbox][yshift=-5.5em, text width=4em] (attentionHead2) {\small Attention Head 2};
-%			\end{scope}
-%			\draw node[textbox][left=1.5em of layer3, text width=5.5em, minimum width=5.8em, minimum height=16em] (graphAttention1) {\small Graph Attention Layer $1_{\ref{eq:graphAttention1}}$ };
-%			
-%			\draw node[textbox][minimum width=12.3em, minimum height=21em, left=1.5em of graphAttention1] (layer1) {};
-%			% Layer 1
-%			\draw node[embBox][minimum height=10.5em, yshift=1em,right=3em of layer1.center, left=2em of graphAttention1] (box4) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,6}
-%				{\draw node[entityInit](ex4\x)[yshift=(\x-2)*1.1em-0.4em, above=0em of box4.center]{};}
-%				
-%				\foreach \x in {1,...,3}
-%				{\draw node[relationInit](e4y\x)[yshift=-(\x)*1.1em-0.6em, below=0mm of box4.center]{};}
-%			\end{scope}
-%			
-%			% Start Initial
-%			\draw node[embBox][minimum height=4em, yshift=4.5em, left=2em of box4] (box1) {};
-%			\foreach \x in {1,...,3}
-%			{\draw node[entityInit](e1\x)[yshift=(\x-2)*1.1em+0.5em, below=0mm of box1.center]{};}
-%			
-%			\draw node[embBox][minimum height=4em, left=2em of box4] (box2) {};
-%			\foreach \x in {1,...,3}
-%			{\draw node[relationInit](e2\x)[yshift=(\x-2)*1.1em+0.5em, below=0mm of box2.center]{};}
-%			
-%			\draw node[embBox][minimum height=4em, yshift=-4.5em, left=2em of box4] (box3) {};
-%			\foreach \x in {1,...,3}
-%			{\draw node[entityInit](e3\x)[yshift=(\x-2)*1.1em+0.5em, below=0mm of box3.center]{};}
-%			% Start Initial
-%			
-%			\begin{scope}[every node/.style={left=of box2, row}]
-%				\draw node (relation1) {president\_of};
-%				\draw node[above=0mm of relation1] (entity1) {Donald Trump};
-%				\draw node[above=0mm of entity1] (triple1) {Triple 1};
-%				\draw node[below=0mm of relation1] (entity2) {United States};	
-%			\end{scope}
-%			
-%			\begin{scope}[every node/.style={row}]
-%				\draw node[below=3em of entity2] (triple2) {Triple N};
-%				\draw node[below=0mm of triple2] (entity3) {Tom Cruise};
-%				\draw node[below=0mm of entity3] (relation2) {born\_in};
-%				\draw node[below=0mm of relation2] (entity4) {New York};	
-%			\end{scope}
-%			
-%			% Right
-%			\draw node[textbox][minimum height=16em, minimum width=2.3em, yshift=-4em, right=1.5em of graphAttention2] (layer4){};
-%			\draw node[embBox][minimum height=7em, right=2em of graphAttention2] (box11) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,6}
-%				{\draw node[entityEmb](e11\x)[yshift=(\x-3)*1.1em, below=0mm of box11.center]{};}
-%			\end{scope}
-%			
-%			\draw node[embBox][minimum height=7em, below=0.7em of box11] (box12) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,6}
-%				{\draw node[relationEmb](e12\x)[yshift=(\x-3)*1.1em, below=0mm of box12.center]{};}
-%			\end{scope}
-%			
-%			\draw node[embBox][minimum height=7em, above=1.5em of box11] (box13) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,6}
-%				{\draw node[entityPretrain](e13\x)[yshift=(\x-3)*1.1em, below=0mm of box13.center]{};}
-%			\end{scope}
-%			
-%			\draw node[embBox][minimum height=5em, left=1.7em of box13] (box14) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,4}
-%				{\draw node[entityInit](e14\x)[yshift=(\x-2)*1.1em, below=0mm of box14.center]{};}
-%			\end{scope}
-%			\draw node[layerBox][minimum height=8em, minimum width=5.5em, above=1.5em of box11, yshift=-0.5em, xshift=-1.5em] (fc2) {};
-%			
-%			\draw node[right=2em of box11, yshift=3.7em] (bigOTimes) {$\bigotimes^{\ref{eq:reInitEmbedding}}$};
-%			
-%			\draw node[textbox][minimum height=16em, minimum width=2.3em, yshift=-3.95em, right=1.5em of bigOTimes] (layer5) {};
-%			\draw node[embBox][minimum height=7em, above=1em of layer5.center, yshift=-0.5em] (box15) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,6}
-%				{\draw node[entityOut](e15\x)[yshift=(\x-3)*1.1em, below=0mm of box15.center]{};}
-%			\end{scope}
-%			
-%			\draw node[embBox][minimum height=7em, below=1em of layer5.center, yshift=0.5em] (box16) {};
-%			\begin{scope}
-%				\foreach \x in {1,...,6}
-%				{\draw node[relationEmb](e16\x)[yshift=(\x-3)*1.1em, below=0mm of box16.center]{};}
-%			\end{scope}
-%			
-%			\draw node[textbox][right=1.5em of layer5] (final) {$\mathcal{L}_{\ref{eq:KBGATLoss}}$};
-%			%16
-%			% Arrow
-%			\draw [arrowStrong] (box10) -- (graphAttention2.west);
-%			
-%			\draw [arrowStrong] (entity1.east) -- (box1.west);
-%			\draw [arrowStrong] (relation1) -- (box2.west);
-%			\draw [arrowStrong] (entity2.east) -- (box3.west);
-%			
-%			\draw [arrowStrong] (graphAttention2.east) -- (box11.west);
-%			\draw [arrowStrong] (graphAttention2.east) -- (box12.west);
-%			
-%			\draw [arrowStrong] (box11.east) to ([xshift=0.35em] bigOTimes.west);
-%			\draw [arrowStrong] (box13.east) to ([xshift=0.35em] bigOTimes.west);
-%			
-%			\draw [arrowStrong] ([xshift=-1.7em] bigOTimes.east) -- (box15.west);
-%			
-%			\draw [arrowStrong] (box16.east) -- (final.west);
-%			\draw [arrowStrong] (box15.east) -- (final.west);
-%			
-%			\foreach \x in {1,2}
-%			\draw [arrowStrong] (layer1.east) -- (attentionHead\x.west);
-%			
-%			\foreach \x in {1,2}
-%			\draw [arrowStrong] (attentionHead\x.east) -- (layer3.west);
-%			
-%			\foreach \x in {1,2,3}
-%			\draw [arrowDash] (box\x.east) -- (box4.west);
-%			
-%			\foreach \x in {7,9}
-%			{\draw [arrowDash] (box\x) -- (box10.west);}
-%			
-%			\foreach \x in {5,6}
-%			{\draw [arrowDash] (box\x) -- (box7.west);}
-%			
-%			\foreach \x in {1, ..., 6}
-%			{\draw [thick] (e81) -- (e9\x);}
-%			\foreach \x in {1, ..., 6}
-%			{\draw [thick] (e82) -- (e9\x);}
-%			\foreach \x in {1, ..., 6}
-%			{\draw [thick] (e83) -- (e9\x);}
-%			\foreach \x in {1, ..., 6}
-%			{\draw [thick] (e84) -- (e9\x);}
-%			
-%			\foreach \x in {1, ..., 6}
-%			{\draw [thick] (e141) -- (e13\x);}
-%			\foreach \x in {1, ..., 6}
-%			{\draw [thick] (e142) -- (e13\x);}
-%			\foreach \x in {1, ..., 6}
-%			{\draw [thick] (e143) -- (e13\x);}
-%			\foreach \x in {1, ..., 6}
-%			{\draw [thick] (e144) -- (e13\x);}
-%			
-%			\draw node[mydot][below=1.1em of entity2] (dot1) {};
-%			\draw node[mydot][below=1.4em of entity2] (dot2) {};
-%			\draw node[mydot][below=1.7em of entity2] (dot3) {};
-%		\end{tikzpicture}
-%	}
-%	\caption{Illustration of the encoder layers in the KBGAT model}
-%	\label{fig:encoderKBGAT}
-%\end{figure}
+\begin{figure*}[htp]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{tikzpicture}[
+			emb/.style={draw, circle,minimum width=.1em, thin, anchor=center},
+			entityInit/.style={emb, fill=amber},
+			relationInit/.style={emb, fill=azure},
+			entityEmb/.style={emb, fill=gray},
+			relationEmb/.style={emb, fill=deepcarminepink},
+			entityPretrain/.style={emb, fill=deepmagenta},
+			entityOut/.style={emb, fill=deepskyblue},
+			box/.style={draw,rectangle, fill=none},
+			embBox/.style={box ,rounded corners=0.2em, minimum width=1.3em},
+			layerBox/.style={color=azure!80, box ,very thick,rounded corners=0.2em, minimum width=1.3em},
+			textbox/.style={box,rounded corners=0.3em, fill=none, align=center, execute at begin node=\setlength{\baselineskip}{1em}},
+			arrowStrong/.style={thick,->,>=stealth},
+			arrowDash/.style={thick, ->,>=stealth, dash pattern=on 1.5mm off 0.7mm, postaction={decorate}},
+			row/.style={draw, rectangle, font=\fontsize{0.6em}{1}\sffamily, align=center, text width=3.9em},
+			arrowStyle/.style={-latex', font=\sffamily},
+			mydot/.style={draw, circle, minimum size=0.1em, scale=0.2},
+			]
+			% 5
+			% Root
+			\draw node[textbox][text width=5.7em] (graphAttention2) {\small Graph Attention Layer $2$};
+			
+			\draw node[textbox][minimum width=9.5em, minimum height=21em, left=1.5em of graphAttention2] (layer3) {};
+			
+			\draw node[embBox][minimum height=20.3em, left=2em of graphAttention2] (box10) {};
+			\begin{scope}[every node/.style={below=0mm of box10.center}]
+				\foreach \x in {1,...,12}
+				{\draw node[entityEmb][yshift=(\x-4)*1.1em+0.55em] (ex10\x) {};}
+				
+				\foreach \x in {1,...,6}
+				{\draw node[relationEmb](ey10\x)[yshift=-(\x+3)*1.1em+0.55em]{};}
+			\end{scope}
+			
+			\draw node[embBox][minimum height=7em, left=2em of box10, yshift=5em] (box7) {};
+			\draw node[embBox][minimum height=7em, left=2em of box10, yshift=-5em] (box9) {};
+			\begin{scope}
+				\foreach \x in {1,...,6}
+				{\draw node[entityEmb](e7\x)[yshift=(\x-3)*1.1em, below=0mm of box7.center]{};}
+				
+				\foreach \x in {1,...,6}
+				{\draw node[relationEmb](e9\x)[yshift=(\x-3)*1.1em, below=0mm of box9.center]{};}
+			\end{scope}
+			
+			\draw node[embBox][minimum height=4em, left=2em of box7, yshift=2.5em] (box5) {};
+			\draw node[embBox][minimum height=4em, left=2em of box7, yshift=-2.5em] (box6) {};
+			\draw node[embBox][minimum height=5em, left=2em of box9] (box8) {};
+			\begin{scope}
+				\foreach \x in {1,...,3}
+				{\draw node[entityEmb](e5\x)[yshift=(\x-2)*1.1em+0.55em, below=0mm of box5.center]{};}
+				
+				\foreach \x in {1,...,3}
+				{\draw node[entityEmb](e6\x)[yshift=-(\x-2)*1.1em+0.55em, below=0mm of box6.center]{};}
+				
+				\foreach \x in {1,...,4}
+				{\draw node[relationInit](e8\x)[yshift=(\x-2)*1.1em, below=0mm of box8.center]{};}
+			\end{scope}
+			\draw node[layerBox][minimum height=8em,minimum width=5.5em, left=1.5em of box10, yshift=-5em] (fc1) {};
+			
+			% Left
+			\begin{scope}[every node/.style={left=2em of layer3}]
+				\draw node[textbox][yshift=5.5em, text width=4em] (attentionHead1) {\small Attention Head 1};
+				\draw node[textbox][yshift=-5.5em, text width=4em] (attentionHead2) {\small Attention Head 2};
+			\end{scope}
+			\draw node[textbox][left=1.5em of layer3, text width=5.5em, minimum width=5.8em, minimum height=16em] (graphAttention1) {\small Graph Attention Layer $1$ };
+			
+			\draw node[textbox][minimum width=12.3em, minimum height=21em, left=1.5em of graphAttention1] (layer1) {};
+			% Layer 1
+			\draw node[embBox][minimum height=10.5em, yshift=1em,right=3em of layer1.center, left=2em of graphAttention1] (box4) {};
+			\begin{scope}
+				\foreach \x in {1,...,6}
+				{\draw node[entityInit](ex4\x)[yshift=(\x-2)*1.1em-0.4em, above=0em of box4.center]{};}
+				
+				\foreach \x in {1,...,3}
+				{\draw node[relationInit](e4y\x)[yshift=-(\x)*1.1em-0.6em, below=0mm of box4.center]{};}
+			\end{scope}
+			
+			% Start Initial
+			\draw node[embBox][minimum height=4em, yshift=4.5em, left=2em of box4] (box1) {};
+			\foreach \x in {1,...,3}
+			{\draw node[entityInit](e1\x)[yshift=(\x-2)*1.1em+0.5em, below=0mm of box1.center]{};}
+			
+			\draw node[embBox][minimum height=4em, left=2em of box4] (box2) {};
+			\foreach \x in {1,...,3}
+			{\draw node[relationInit](e2\x)[yshift=(\x-2)*1.1em+0.5em, below=0mm of box2.center]{};}
+			
+			\draw node[embBox][minimum height=4em, yshift=-4.5em, left=2em of box4] (box3) {};
+			\foreach \x in {1,...,3}
+			{\draw node[entityInit](e3\x)[yshift=(\x-2)*1.1em+0.5em, below=0mm of box3.center]{};}
+			% Start Initial
+			
+			\begin{scope}[every node/.style={left=of box2, row}]
+				\draw node (relation1) {president\_of};
+				\draw node[above=0mm of relation1] (entity1) {Donald Trump};
+				\draw node[above=0mm of entity1] (triple1) {Triple 1};
+				\draw node[below=0mm of relation1] (entity2) {United States};	
+			\end{scope}
+			
+			\begin{scope}[every node/.style={row}]
+				\draw node[below=3em of entity2] (triple2) {Triple N};
+				\draw node[below=0mm of triple2] (entity3) {Tom Cruise};
+				\draw node[below=0mm of entity3] (relation2) {born\_in};
+				\draw node[below=0mm of relation2] (entity4) {New York};	
+			\end{scope}
+			
+			% Right
+			\draw node[textbox][minimum height=16em, minimum width=2.3em, yshift=-4em, right=1.5em of graphAttention2] (layer4){};
+			\draw node[embBox][minimum height=7em, right=2em of graphAttention2] (box11) {};
+			\begin{scope}
+				\foreach \x in {1,...,6}
+				{\draw node[entityEmb](e11\x)[yshift=(\x-3)*1.1em, below=0mm of box11.center]{};}
+			\end{scope}
+			
+			\draw node[embBox][minimum height=7em, below=0.7em of box11] (box12) {};
+			\begin{scope}
+				\foreach \x in {1,...,6}
+				{\draw node[relationEmb](e12\x)[yshift=(\x-3)*1.1em, below=0mm of box12.center]{};}
+			\end{scope}
+			
+			\draw node[embBox][minimum height=7em, above=1.5em of box11] (box13) {};
+			\begin{scope}
+				\foreach \x in {1,...,6}
+				{\draw node[entityPretrain](e13\x)[yshift=(\x-3)*1.1em, below=0mm of box13.center]{};}
+			\end{scope}
+			
+			\draw node[embBox][minimum height=5em, left=1.7em of box13] (box14) {};
+			\begin{scope}
+				\foreach \x in {1,...,4}
+				{\draw node[entityInit](e14\x)[yshift=(\x-2)*1.1em, below=0mm of box14.center]{};}
+			\end{scope}
+			\draw node[layerBox][minimum height=8em, minimum width=5.5em, above=1.5em of box11, yshift=-0.5em, xshift=-1.5em] (fc2) {};
+			
+			\draw node[right=2em of box11, yshift=3.7em] (bigOTimes) {$\bigotimes^{\ref{eq:reInitEmbedding}}$};
+			
+			\draw node[textbox][minimum height=16em, minimum width=2.3em, yshift=-3.95em, right=1.5em of bigOTimes] (layer5) {};
+			\draw node[embBox][minimum height=7em, above=1em of layer5.center, yshift=-0.5em] (box15) {};
+			\begin{scope}
+				\foreach \x in {1,...,6}
+				{\draw node[entityOut](e15\x)[yshift=(\x-3)*1.1em, below=0mm of box15.center]{};}
+			\end{scope}
+			
+			\draw node[embBox][minimum height=7em, below=1em of layer5.center, yshift=0.5em] (box16) {};
+			\begin{scope}
+				\foreach \x in {1,...,6}
+				{\draw node[relationEmb](e16\x)[yshift=(\x-3)*1.1em, below=0mm of box16.center]{};}
+			\end{scope}
+			
+			\draw node[textbox][right=1.5em of layer5] (final) {$\mathcal{L}$};
+			%16
+			% Arrow
+			\draw [arrowStrong] (box10) -- (graphAttention2.west);
+			
+			\draw [arrowStrong] (entity1.east) -- (box1.west);
+			\draw [arrowStrong] (relation1) -- (box2.west);
+			\draw [arrowStrong] (entity2.east) -- (box3.west);
+			
+			\draw [arrowStrong] (graphAttention2.east) -- (box11.west);
+			\draw [arrowStrong] (graphAttention2.east) -- (box12.west);
+			
+			\draw [arrowStrong] (box11.east) to ([xshift=0.35em] bigOTimes.west);
+			\draw [arrowStrong] (box13.east) to ([xshift=0.35em] bigOTimes.west);
+			
+			\draw [arrowStrong] ([xshift=-1.7em] bigOTimes.east) -- (box15.west);
+			
+			\draw [arrowStrong] (box16.east) -- (final.west);
+			\draw [arrowStrong] (box15.east) -- (final.west);
+			
+			\foreach \x in {1,2}
+			\draw [arrowStrong] (layer1.east) -- (attentionHead\x.west);
+			
+			\foreach \x in {1,2}
+			\draw [arrowStrong] (attentionHead\x.east) -- (layer3.west);
+			
+			\foreach \x in {1,2,3}
+			\draw [arrowDash] (box\x.east) -- (box4.west);
+			
+			\foreach \x in {7,9}
+			{\draw [arrowDash] (box\x) -- (box10.west);}
+			
+			\foreach \x in {5,6}
+			{\draw [arrowDash] (box\x) -- (box7.west);}
+			
+			\foreach \x in {1, ..., 6}
+			{\draw [thick] (e81) -- (e9\x);}
+			\foreach \x in {1, ..., 6}
+			{\draw [thick] (e82) -- (e9\x);}
+			\foreach \x in {1, ..., 6}
+			{\draw [thick] (e83) -- (e9\x);}
+			\foreach \x in {1, ..., 6}
+			{\draw [thick] (e84) -- (e9\x);}
+			
+			\foreach \x in {1, ..., 6}
+			{\draw [thick] (e141) -- (e13\x);}
+			\foreach \x in {1, ..., 6}
+			{\draw [thick] (e142) -- (e13\x);}
+			\foreach \x in {1, ..., 6}
+			{\draw [thick] (e143) -- (e13\x);}
+			\foreach \x in {1, ..., 6}
+			{\draw [thick] (e144) -- (e13\x);}
+			
+			\draw node[mydot][below=1.1em of entity2] (dot1) {};
+			\draw node[mydot][below=1.4em of entity2] (dot2) {};
+			\draw node[mydot][below=1.7em of entity2] (dot3) {};
+		\end{tikzpicture}
+	}
+	\caption{Illustration of the encoder layers in the KBGAT model}
+	\label{fig:encoderKBGAT}
+\end{figure*}
 
 
 The model transforms the entity embedding matrix
@@ -1107,10 +1311,10 @@ where $\mathcal{N}_i$ denotes the set of neighbors of the central node $e_i$ wit
 
 Similar to the multi-head attention mechanism in Equation~\ref{multiHeadAttention}, we concatenate $N_{\text{head}}$ attention heads to stabilize the learning process:
 
-%\begin{equation}
-%	\label{eq:graphAttention1}
-%	\overrightarrow{e'}_i=\bigparallel_{h=1}^{N_{\text{head}}} \sigma\left(\sum_{j\in \mathcal{N}_i}\alpha_{ijk}^{(h)} \overrightarrow{t^{(h)}_{ijk}}\right)
-%\end{equation}
+\begin{equation}
+	\label{eq:graphAttention1}
+	\overrightarrow{e'}_i=\bigparallel_{h=1}^{N_{\text{head}}} \sigma\left(\sum_{j\in \mathcal{N}_i}\alpha_{ijk}^{(h)} \overrightarrow{t^{(h)}_{ijk}}\right)
+\end{equation}
 
 Likewise, for relation embeddings, a weight matrix $\mathbf{W}_R$ is used to perform a linear transformation from the original relation embedding of dimension $P$ to a new dimension $P'$:
 
