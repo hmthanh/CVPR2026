@@ -698,7 +698,7 @@ Similar to the GAT model described in Section~\ref{sec:GAT}, the model transform
 	\resizebox{\textwidth}{!}{%
 		\input{tikzpicture/encoder_kbgat.tex}
 	}
-	\caption{Illustration of the encoder layers in the KBGAT model}
+	\caption{Illustration of the encoder layers in the GCAT model}
 	\label{fig:encoderKBGAT}
 \end{figure*}
 
@@ -811,9 +811,7 @@ where $\gamma > 0$ is the margin parameter, $S$ is the set of valid triples, and
 	{S'} ={\underbrace{\{ t^k_{i'j} | e'_i \in \mathcal{E}\setminus e_i\}}_{\text{head entity replacement}} \cup \underbrace{\{ t^k_{ij'} | e'_j \in \mathcal{E}\setminus e_j\}}_{\text{tail entity replacement}}}
 \end{equation}
 
-The output of the KBGAT model is the set of entity and relation embedding vectors, which are subsequently fed into the ConvKB model for final prediction.
-
-
+The output of the GCAT model is the set of entity and relation embedding vectors, which are subsequently fed into the ConvKB model for final prediction.
 
 
 \subsubsection{ConvKB Prediction Model}
