@@ -1,4 +1,16 @@
-\begin{tikzpicture}
+\tikzset{
+	category/.style  = {draw, thin, align=center},
+	subcat/.style={rectangle, rounded corners=6pt},
+	center/.style = {category, ellipse, fill=azure, text width=4em},
+	group/.style = {category, subcat, fill=deepskyblue, rounded corners=3pt, text width=6em},
+	yellowbox/.style = {category, subcat, fill=amber},
+	greenbox/.style = {category, subcat, fill=darkpastelgreen},
+	redbox/.style = {category, subcat, fill=awesome},
+	bluebox/.style = {category, subcat, fill=deepmagenta!70},
+	leafbox/.style = {category, subcat, fill=black!10, rounded corners=3pt}
+}
+
+\begin{tikzpicture}[>=Stealth]
 	\node[center][execute at begin node=\setlength{\baselineskip}{0.9em}] (root) {Knowledge Graph};
 	\node[group][above left=1cm of root, execute at begin node=\setlength{\baselineskip}{1em}] (c1) {Knowledge Representation Learning};
 	\node[group][above right=8mm of root, execute at begin node=\setlength{\baselineskip}{1em}] (c2) {Knowledge Inference};
@@ -7,9 +19,9 @@
 	
 	\begin{scope}[every node/.style={yellowbox}]
 		\node[above=8mm of c1, xshift=-1cm] (c11) {Embedding Space};
-		\node[left=of c1, yshift=9mm, xshift=-7mm, yshift=10mm] (c12) {Scoring Function};
-		\node[left=15mm of c1, yshift=-5mm] (c13) {Model Encoding};
-		\node[left=of c1, yshift=-20mm] (c14) {Auxiliary Information};
+		\node[above left=of c1, yshift=9mm, xshift=0mm, yshift=-18mm] (c12) {Scoring Function};
+		\node[left=15mm of c1, xshift=5mm] (c13) {Model Encoding};
+		\node[below left=of c1, xshift=10mm,yshift=0mm] (c14) {Auxiliary Information};
 	\end{scope}
 	
 	\begin{scope}[every node/.style={redbox}]
@@ -17,20 +29,20 @@
 		\node[above=1cm of c2, yshift=5mm, xshift=13mm] (c22) {Question Answering};
 		\node[right=of c2, yshift=15mm] (c23) {Dialogue System};
 		\node[right=of c2, yshift=4mm, xshift=7mm] (c24) {Recommendation System};
-		\node[below=5mm of c2, xshift=5mm] (c25) {Other Applications};
+		\node[below=5mm of c2, yshift=-10mm, xshift=5mm] (c25) {Other Applications};
 	\end{scope}
 	
 	\begin{scope}[every node/.style={greenbox}]
-		\node[left=1cm of c3, yshift=5mm] (c31) {Entity Discovery};
+		\node[left=1cm of c3, yshift=0mm] (c31) {Entity Discovery};
 		\node[below left=of c3, yshift=8mm, xshift=3mm] (c32) {Relation Extraction};
 		\node[below right=10mm of c3, xshift=-4cm] (c33) {Graph Completion};
 	\end{scope}
 	
 	\begin{scope}[every node/.style={bluebox}]
-		\node[below=of c4, xshift=-15mm, yshift=-37mm] (c41) {Temporal Logic Reasoning};
-		\node[below=of c4, xshift=18mm, yshift=-25mm] (c42) {Time-Independent Relations};
-		\node[below right=of c4, xshift=0mm, yshift=-15mm] (c43) {Dynamic Entities};
-		\node[right=of c4, xshift=11mm, yshift=-22mm] (c44) {Temporal Embeddings};
+		\node[below=of c4, xshift=2mm, yshift=-15mm] (c41) {Temporal Logic Reasoning};
+		\node[below=of c4, xshift=25mm, yshift=-5mm] (c42) {Time-Independent Relations};
+		\node[below right=of c4, xshift=0mm, yshift=5mm] (c43) {Dynamic Entities};
+		\node[right=of c4, xshift=0mm, yshift=-3mm] (c44) {Temporal Embeddings};
 	\end{scope}
 	
 	\begin{scope}[every node/.style={leafbox}]
@@ -41,14 +53,14 @@
 				- Discrete & \\
 			\end{tabular}
 		};
-		\node[above=5mm of c12, xshift=-5mm] (c12x) {
+		\node[above=5mm of c12, xshift=-10mm, yshift=6mm] (c12x) {
 			\begin{tabular}{@{}l@{}}
 				- Distance-based \\
 				- Semantic \\
 				- Others \\
 			\end{tabular}
 		};
-		\node[left=of c13, yshift=5mm] (c13x) {
+		\node[left=of c13, yshift=5mm, xshift=3mm] (c13x) {
 			\begin{tabular}{@{}l@{}}
 				- Linear / Bilinear \\
 				- Matrix Factorization \\
@@ -59,13 +71,13 @@
 				- GCN \\
 			\end{tabular}
 		};
-		\node[below left=5mm of c14, xshift=6mm, yshift=-3mm] (c14x) {
+		\node[left=5mm of c14, xshift=0mm, yshift=-5mm] (c14x) {
 			\begin{tabular}{@{}l@{}c@{}l@{}}
 				- Textual & - Type & - Visual \\
 			\end{tabular}
 		};
 		%%%%%%%%%%%% 
-		\node[below left=of c31] (c31x) {
+		\node[below left=of c31, yshift=10mm] (c31x) {
 			\begin{tabular}{@{}l@{}}
 				- Recognition \\
 				- Typing \\
@@ -99,7 +111,7 @@
 				- Multi-step Reasoning \\
 			\end{tabular}
 		};
-		\node[below right=5mm of c25, yshift=18mm] (c25x) {
+		\node[right=5mm of c25, yshift=3mm] (c25x) {
 			\begin{tabular}{@{}l@{}}
 				- Question Generation \\
 				- Search Engines \\

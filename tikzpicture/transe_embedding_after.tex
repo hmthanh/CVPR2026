@@ -15,7 +15,8 @@
 		vblack/.style = {thick, black},
 		vred/.style   = {thick, awesome},
 		vgreen/.style = {thick, darkpastelgreen},
-		vdash/.style  = {thick, dashed, gray!80}
+		vdash/.style  = {thick, dashed, deepmagenta},
+		vline/.style  = {thick, dashed, gray!80}
 	}
 	
 	% --- Points and vectors ---
@@ -30,9 +31,9 @@
 	\draw[vblack,->] (C) -- (D) node[midway, left=4pt] {\small$r=(0,2)$};
 	
 	% t' = (2, 1): E → F
-	\node[point,label=below:E] (E) at (2,6) {};
-	\node[point,label=above:F] (F) at (4,7) {};
-	\draw[vred,->] (E) -- (F) node[midway, above=2pt, sloped] {\small$t'=(2,1)$};
+	\node[point,label=above left:E] (E) at (2,6) {};
+	\node[point,label=above right:F] (F) at (4,7) {};
+	\draw[vred,->] (E) -- (F) node[midway, above=10pt, sloped] {\small$t'=(2,1)$};
 	
 	% t = (-1, 2): G → H
 	\node[point,label=right:G] (G) at (-2,5) {};
@@ -40,12 +41,12 @@
 	\draw[vgreen,->] (G) -- (H) node[midway, right=2pt] {\small$t=(-1,2)$};
 	
 	% Additional points: K, I, J
-	\node[point,label=above left:K] (K) at (-2.5,6) {};
+	\node[point,label=left:K] (K) at (-2.5,6) {};
 	\node[point,label=above:I] (I) at (2.45,6.2) {};
 	\node[point,label=below:J] (J) at (2.6,5.4) {};
 	
 	% Dashed lines for distances
-	\draw[vdash] (K) -- (J) node[midway, below=3pt] {\small$d$};
-	\draw[vdash] (J) -- (I) node[midway, right=3pt] {\small$d'$};
+	\draw[vline] (K) -- (J) node[midway, above=0pt, xshift=3mm] {\small$\color{deepmagenta}{d}$};
+	\draw[vline] (J) -- (I) node[midway, xshift=-2mm] {\small$\color{deepmagenta}{d'}$};
 	
 \end{tikzpicture}
