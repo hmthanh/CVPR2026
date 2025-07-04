@@ -1001,18 +1001,138 @@ To achieve the goal of learning embedding vectors such that $\overrightarrow{h} 
 % \end{figure}
 
 
+
+\begin{figure}[t]
+	\centering
+%	\resizebox{\linewidth}{!}{%
+%		\includegraphics{figures/transe.png}
+%	}
+
+ \begin{tikzpicture}[>=Stealth, scale=0.8]
+	% ------------------------------------------------------------------
+	% GRID & AXES
+	% ------------------------------------------------------------------
+	\draw[step=1cm, thin, gray!60] (-5,-1) grid (5,9);
+	\draw[very thick] (-5,0) -- (5,0);    % x–axis
+	\draw[very thick] (0,-1) -- (0,9);    % y–axis
+	
+	% ------------------------------------------------------------------
+	% STYLE DEFINITIONS
+	% ------------------------------------------------------------------
+	\tikzset{
+		point/.style = {circle, fill=blue!70, inner sep=2pt},
+		vblue/.style  = {thick, blue!70},
+		vblack/.style = {thick, black},
+		vred/.style   = {thick, red},
+		vgreen/.style = {thick, green!60!black},
+	}
+	
+	% ------------------------------------------------------------------
+	% POINTS & VECTORS
+	% ------------------------------------------------------------------
+	% 1.  h = (2, 3)   ----  A(1,1) → B(3,4)
+	\node[point,label=below left:A] (A) at (1,1) {};
+	\node[point,label=above right:B] (B) at (3,4) {};
+	\draw[vblue,->] (A) -- (B) node[midway, below right=2pt] {\small$h=(2,3)$};
+	
+	% 2.  r = (0, 2)   ----  C(1,3) → D(1,5)
+	\node[point,label=left:C]  (C) at (1,3) {};
+	\node[point,label=left:D]  (D) at (1,5) {};
+	\draw[vblack,->] (C) -- (D) node[midway, left=4pt] {\small$r=(0,2)$};
+	
+	% 3.  t' = (2, 1)  ----  E(2,6) → F(4,7)
+	\node[point,label=below left:E] (E) at (2,6) {};
+	\node[point,label=above right:F] (F) at (4,7) {};
+	\draw[vred,->] (E) -- (F) node[midway, above=2pt, sloped] {\small$t'=(2,1)$};
+	
+	% 4.  t = (-1, 2)  ----  G(-2,5) → H(-3,7)
+	\node[point,label=right:G] (G) at (-2,5) {};
+	\node[point,label=above left:H] (H) at (-3,7) {};
+	\draw[vgreen,->] (G) -- (H) node[midway, right=2pt] {\small$t=(-1,2)$};
+	
+\end{tikzpicture}
+
+	\caption{Initial TransE embedding vector}
+	\label{fig:TransEEmbeddingBefore}
+\end{figure}
+
+
+
 \begin{figure}[htp]
 	\centering
-	\resizebox{\linewidth}{!}{%
-		\includegraphics{figures/transe.png}
-	}
-	\caption{TransE embedding model}
-	\label{fig:TransEExplain}
+	%	\resizebox{\linewidth}{!}{%
+		%		\includegraphics{figures/transe.png}
+		%	}
+	
+	 \begin{tikzpicture}[>=Stealth, scale=0.8]
+	 	% ------------------------------------------------------------------
+	 	% GRID & AXES
+	 	% ------------------------------------------------------------------
+	 	\draw[step=1cm, thin, gray!60] (-5,-1) grid (5,9);
+	 	\draw[very thick] (-5,0) -- (5,0);    % x–axis
+	 	\draw[very thick] (0,-1) -- (0,9);    % y–axis
+	 	
+	 	% ------------------------------------------------------------------
+	 	% STYLE DEFINITIONS
+	 	% ------------------------------------------------------------------
+	 	\tikzset{
+	 		point/.style = {circle, fill=blue!70, inner sep=2pt},
+	 		vblue/.style  = {thick, blue!70},
+	 		vblack/.style = {thick, black},
+	 		vred/.style   = {thick, red},
+	 		vgreen/.style = {thick, green!60!black},
+	 		vdash/.style  = {thick, dashed, gray!80}
+	 	}
+	 	
+	 	% --- Points and vectors ---
+	 	% h = (2, 3): A → B
+	 	\node[point,label=below right:A] (A) at (1,3) {};
+	 	\node[point,label=right:B] (B) at (3,6	) {};
+	 	\draw[vblue,->] (A) -- (B) node[midway, below right=2pt] {\small$h=(2,3)$};
+	 	
+	 	% r = (0, 2): C → D
+	 	\node[point,label=below left:C] (C) at (1,3) {};
+	 	\node[point,label=left:D] (D) at (1,5) {};
+	 	\draw[vblack,->] (C) -- (D) node[midway, left=4pt] {\small$r=(0,2)$};
+	 	
+	 	% t' = (2, 1): E → F
+	 	\node[point,label=below:E] (E) at (2,6) {};
+	 	\node[point,label=above:F] (F) at (4,7) {};
+	 	\draw[vred,->] (E) -- (F) node[midway, above=2pt, sloped] {\small$t'=(2,1)$};
+	 	
+	 	% t = (-1, 2): G → H
+	 	\node[point,label=right:G] (G) at (-2,5) {};
+	 	\node[point,label=above:H] (H) at (-3,7) {};
+	 	\draw[vgreen,->] (G) -- (H) node[midway, right=2pt] {\small$t=(-1,2)$};
+	 	
+	 	% Additional points: K, I, J
+	 	\node[point,label=above left:K] (K) at (-2.5,6) {};
+	 	\node[point,label=above:I] (I) at (2.45,6.2) {};
+	 	\node[point,label=below:J] (J) at (2.6,5.4) {};
+	 	
+	 	% Dashed lines for distances
+	 	\draw[vdash] (K) -- (J) node[midway, below=3pt] {\small$d$};
+	 	\draw[vdash] (J) -- (I) node[midway, right=3pt] {\small$d'$};
+	 	
+	 \end{tikzpicture}
+	
+	\caption{TransE embedding vector after linear transformation}
+	\label{fig:TransEEmbeddingAfter}
 \end{figure}
+
+
+% \begin{figure}[htp]
+% 	\centering
+% 	\resizebox{\linewidth}{!}{%
+% 		\includegraphics{figures/transe.png}
+% 	}
+% 	\caption{TransE embedding vector after linear transformation}
+% 	\label{fig:TransEExplain}
+% \end{figure}
 
 Here, $\gamma > 0$ is the margin, and $h'$ and $t'$ are entities sampled as defined in Equation \ref{eq:sampleTransE}. $\Delta$ and $\Delta'$ represent the difference vectors for the embeddings in valid and invalid triples, respectively, with $d = \big\|\Delta \big\|_{1} = \big\| \overrightarrow{h} + \overrightarrow{r} - \overrightarrow{t} \big\|_{1}$ and $d' = \big\|\Delta' \big\|_{1} = \big\| \overrightarrow{h'} + \overrightarrow{r} - \overrightarrow{t'} \big\|_{1}$, where $\|\cdot\|_{1}$ denotes the L1 norm.
 
-As illustrated in \autoref{fig:TransEExplain}, if $d > d'$ or $d - d' > 0$, then $\overrightarrow{h} + \overrightarrow{r}$ is closer to $\overrightarrow{t}$ than to $\overrightarrow{t'}$. Since we want the embedding vectors to satisfy the condition in Equation \ref{eq:conditionTransE}, $\overrightarrow{h} + \overrightarrow{r}$ should be as close as possible to $\overrightarrow{t}$. That means, the closer $\overrightarrow{h} + \overrightarrow{r}$ is to $\overrightarrow{t'}$, the more incorrect it becomes.
+As illustrated in \autoref{fig:TransEEmbeddingBefore}, \autoref{fig:TransEEmbeddingAfter}, if $d > d'$ or $d - d' > 0$, then $\overrightarrow{h} + \overrightarrow{r}$ is closer to $\overrightarrow{t}$ than to $\overrightarrow{t'}$. Since we want the embedding vectors to satisfy the condition in Equation \ref{eq:conditionTransE}, $\overrightarrow{h} + \overrightarrow{r}$ should be as close as possible to $\overrightarrow{t}$. That means, the closer $\overrightarrow{h} + \overrightarrow{r}$ is to $\overrightarrow{t'}$, the more incorrect it becomes.
 
 Therefore, during training, we aim for $\Delta'$ to be as large as possible relative to $\Delta$. If $\Delta' > \Delta$ or $d' - d > 0$, there is no need to update the embedding weights further. Hence, in the loss function \ref{eq:KBGATLoss}, the term $[d - d' + \gamma]_{+}$ captures only the positive part because the negative part already satisfies the correctness of the condition in Equation \ref{eq:conditionTransE} during training.
 
@@ -1092,7 +1212,7 @@ After obtaining the embedding vectors that capture spatial features of the knowl
 			\end{scope}
 			\draw node[textbox][left=1.5em of layer3, text width=5.5em, minimum width=5.8em, minimum height=16em] (graphAttention1) {\small Graph Attention Layer $1$ };
 			
-			\draw node[textbox][minimum width=12.3em, minimum height=21em, left=1.5em of graphAttention1] (layer1) {};
+			\draw node[textbox][minimum width=13em, minimum height=21em, left=1.5em of graphAttention1] (layer1) {};
 			% Layer 1
 			\draw node[embBox][minimum height=10.5em, yshift=1em,right=3em of layer1.center, left=2em of graphAttention1] (box4) {};
 			\begin{scope}
