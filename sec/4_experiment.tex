@@ -277,9 +277,6 @@ We use the Adam optimizer with a learning rate of $\mu = 0.001$. The final embed
 
 As previously mentioned, our rule-based model can be fully executed on a standard laptop. In our experiment, the machine configuration was as follows: T480, Core i5 8th Gen, 16GB RAM, 4 cores and 8 threads. The source code was implemented in Python version 3.6, utilizing only built-in Python functions without any third-party libraries. The experiments were conducted on four widely-used datasets: FB15k, FB15-237, WN18, and WN18RR. Detailed information about these datasets is provided in \autoref{sec:DataTraining} under the training datasets section.
 
-%As described in \autoref{alg:GenerateRules}, 
-The AnyBURL algorithm learns rules generated within a user-configurable time interval. Here, we set the training time to 1000 seconds (approximately 17 minutes), with saturation (SAT) set to \(0.85\), confidence threshold Q set to \(0.05\), and sample size S configured as (\(\frac{1}{10}~ \text{of the training set}\)). With this setup, our Python version of the model produced results comparable to the Java version developed by Meilicke, Christian et al. \cite{burl}, which was configured similarly but trained for only 100 seconds. The difference in training time is primarily due to performance differences between Python and Java. We chose Python because it is the primary language used in many recent artificial intelligence models and provides convenience for performance comparison and evaluation with other deep learning methods, most of which are also implemented in Python.
-
 
 
 \begin{table}[h]
