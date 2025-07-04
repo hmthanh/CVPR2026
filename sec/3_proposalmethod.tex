@@ -173,223 +173,87 @@ However, in some cases, the tasks may involve more fine-grained graph components
 While the input is determined by the type of information to be preserved, the output varies depending on the downstream graph mining task. Therefore, we discuss in more detail the embedding methods based on the type of output required by the embedding problem.
 
 
-
 \begin{figure*}[htbp]
 	\centering
 	
-	\begin{subfigure}[b]{0.45\textwidth}
+	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\begin{tikzpicture}
-			\begin{axis}[
-				axis lines=box,
-				xmin=0, xmax=3,
-				ymin=-3, ymax=3,
-				xtick={0, 0.75, 1.5, 2.25, 3},
-				ytick={-3, -1.5, 0, 1.5, 3},
-				grid=both,
-				grid style={line width=0.3pt, draw=gray!30},
-				major grid style={line width=0.4pt, draw=gray!50},
-				ticklabel style={font=\small},
-				width=\textwidth, height=\textwidth,
-				enlargelimits=false,
-				scatter/classes={
-					a={mark=*,draw=black,fill=green!50},
-					b={mark=*,draw=black,fill=orange!60},
-					c={mark=*,draw=black,fill=blue!60}
-				},
-				axis on top,
-				clip=false
-				]
-				
-				% Plot points
-				\addplot[
-				scatter, only marks, scatter src=explicit symbolic, mark size=2.8pt
-				] table[meta=class] {
-					x     y     label  class
-					0.4   1.8   1       a
-					0.6   1.2   3       a
-					0.8   2.2   2       a
-					
-					0.9   0.5   4       b
-					1.0   0.0   5       b
-					1.3   0.2   6       b
-					
-					1.7   0.3   7       c
-					1.6  -0.3   8       c
-					2.0  -0.2   9       c
-				};
-				
-				% Labels placed further above the nodes
-				\node[font=\bfseries] at (axis cs:0.4,2.1) {1};
-				\node[font=\bfseries] at (axis cs:0.6,1.5) {3};
-				\node[font=\bfseries] at (axis cs:0.8,2.5) {2};
-				
-				\node[font=\bfseries] at (axis cs:0.9,0.8) {4};
-				\node[font=\bfseries] at (axis cs:1.0,0.3) {5};
-				\node[font=\bfseries] at (axis cs:1.3,0.5) {6};
-				
-				\node[font=\bfseries] at (axis cs:1.7,0.6) {7};
-				\node[font=\bfseries] at (axis cs:1.6,-0.0) {8};
-				\node[font=\bfseries] at (axis cs:2.0,0.1) {9};
-				
-			\end{axis}
-		\end{tikzpicture}
-		
-		\caption{
-			Node embedding with each vector representing node features}
+		\input{tikzpicture/node_embedding.tex}
+		\caption{Node embedding with each vector representing node features}
 		\label{fig:nodeEmbedding}
 	\end{subfigure}
-	
-	\begin{subfigure}[b]{0.45\textwidth}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		
-		\begin{tikzpicture}
-			\begin{axis}[
-				axis lines=box,
-				xmin=0, xmax=3,
-				ymin=-3, ymax=3,
-				xtick={0, 0.75, 1.5, 2.25, 3},
-				ytick={-3, -1.5, 0, 1.5, 3},
-				grid=both,
-				grid style={line width=0.3pt, draw=gray!30},
-				major grid style={line width=0.4pt, draw=gray!50},
-				ticklabel style={font=\small},
-				width=\textwidth, height=\textwidth,
-				enlargelimits=false,
-				scatter/classes={
-					green={mark=triangle*,draw=black,fill=green!50},
-					orange={mark=triangle*,draw=black,fill=orange!60},
-					blue={mark=triangle*,draw=black,fill=blue!60},
-					yellow={mark=triangle*,draw=black,fill=yellow!80},
-					purple={mark=triangle*,draw=black,fill=violet!70}
-				},
-				axis on top,
-				clip=false
-				]
-				
-				% Plot edge embeddings as triangles
-				\addplot[
-				scatter, only marks, scatter src=explicit symbolic, mark size=4pt
-				] table[meta=class] {
-					x     y     label   class
-					0.5   0.2   e_{13}  green
-					0.7   1.1   e_{12}  green
-					1.2   1.1   e_{23}  green
-					
-					0.8   0.3   e_{45}  orange
-					1.0   0.0   e_{46}  orange
-					1.8   0.1   e_{56}  orange
-					
-					0.4  -0.8   e_{78}  blue
-					0.8  -1.3   e_{79}  blue
-					
-					2.0  -0.8   e_{67}  purple
-					2.2  -1.0   e_{34}  yellow
-				};
-				
-				% Labels near triangles
-				\node[font=\bfseries] at (axis cs:0.5,0.45) {e\textsubscript{13}};
-				\node[font=\bfseries] at (axis cs:0.7,1.35) {e\textsubscript{12}};
-				\node[font=\bfseries] at (axis cs:1.2,1.35) {e\textsubscript{23}};
-				
-				\node[font=\bfseries] at (axis cs:0.8,0.55) {e\textsubscript{45}};
-				\node[font=\bfseries] at (axis cs:1.0,0.3) {e\textsubscript{46}};
-				\node[font=\bfseries] at (axis cs:1.8,0.35) {e\textsubscript{56}};
-				
-				\node[font=\bfseries] at (axis cs:0.4,-0.55) {e\textsubscript{78}};
-				\node[font=\bfseries] at (axis cs:0.8,-1.05) {e\textsubscript{79}};
-				
-				\node[font=\bfseries] at (axis cs:2.0,-0.55) {e\textsubscript{67}};
-				\node[font=\bfseries] at (axis cs:2.2,-0.75) {e\textsubscript{34}};
-				
-			\end{axis}
-		\end{tikzpicture}
-		
+		\input{tikzpicture/edge_embedding.tex}
 		\caption{Edge embedding with each vector representing edge features}
 		\label{fig:edgeEmbedding}
 	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
+	
+	\vspace{0.5em}
+	
+	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\begin{tikzpicture}
-			\begin{axis}[
-				axis lines=box,
-				xmin=0, xmax=3,
-				ymin=-3, ymax=3,
-				xtick={0, 0.75, 1.5, 2.25, 3},
-				ytick={-3, -1.5, 0, 1.5, 3},
-				grid=both,
-				grid style={line width=0.3pt, draw=gray!30},
-				major grid style={line width=0.4pt, draw=gray!50},
-				ticklabel style={font=\small},
-				width=\textwidth, height=\textwidth,
-				enlargelimits=false,
-				scatter/classes={
-					green={mark=diamond*,draw=black,fill=green!50},
-					orange={mark=diamond*,draw=black,fill=orange!60},
-					blue={mark=diamond*,draw=black,fill=blue!60}
-				},
-				axis on top,
-				clip=false
-				]
-				
-				% Cluster centroids
-				\addplot[
-				scatter, only marks, scatter src=explicit symbolic, mark size=4pt
-				] table[meta=class] {
-					x     y     label       class
-					2.0   0.5   G_{1,2,3}    green
-					1.5   0.0   G_{4,5,6}    orange
-					1.0  -1.5   G_{7,8,9}    blue
-				};
-				
-				% Cluster labels near markers
-				\node[font=\bfseries\Large] at (axis cs:2.0,0.85)  {G\textsubscript{\{1,2,3\}}};
-				\node[font=\bfseries\Large] at (axis cs:1.5,0.35)  {G\textsubscript{\{4,5,6\}}};
-				\node[font=\bfseries\Large] at (axis cs:1.0,-1.15) {G\textsubscript{\{7,8,9\}}};
-				
-			\end{axis}
-		\end{tikzpicture}
-		
+		\input{tikzpicture/substructure_embedding.tex}
 		\caption{Embedding a graph substructure}
 		\label{fig:substructureEmbedding}
 	\end{subfigure}
-	\begin{subfigure}[b]{0.45\textwidth}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\begin{tikzpicture}
-			\begin{axis}[
-				axis lines=box,
-				xmin=0, xmax=3,
-				ymin=-3, ymax=3,
-				xtick={0, 0.75, 1.5, 2.25, 3},
-				ytick={-3, -1.5, 0, 1.5, 3},
-				grid=both,
-				grid style={line width=0.3pt, draw=gray!30},
-				major grid style={line width=0.4pt, draw=gray!50},
-				ticklabel style={font=\small},
-				width=\textwidth, height=\textwidth,
-				enlargelimits=false,
-				axis on top,
-				clip=false
-				]
-				
-				% Manually place a filled black hexagon
-				\node[regular polygon, regular polygon sides=6, minimum size=8pt,
-				fill=black, draw=black] at (axis cs:1.2,0.4) {};
-				
-				% Label G1 near the hexagon
-				\node[font=\bfseries\Large] at (axis cs:1.0,0.0) {G\textsubscript{1}};
-				
-			\end{axis}
-		\end{tikzpicture}
-		
+		\input{tikzpicture/whole_graph_embedding.tex}
 		\caption{Whole-graph embedding}
 		\label{fig:wholeGraphEmbedding}
 	\end{subfigure}
-	
 	\caption{Graph embedding methods.}
 	\label{fig:GraphEmbeddingMethods}
 \end{figure*}
+
+
+
+
+
+%\begin{figure*}[htbp]
+%	\centering
+%	
+%	\rule{\textwidth}{1pt} 
+%	\begin{subfigure}[b]{0.3\textwidth}
+%		\centering
+%		\rule{\textwidth}{1pt}
+%		
+%		\input{tikzpicture/node_embedding.tex}
+%		\caption{
+%			Node embedding with each vector representing node features}
+%		\label{fig:nodeEmbedding}
+%	\end{subfigure}
+%	
+%	\begin{subfigure}[b]{0.3\textwidth}
+%		\centering
+%		\input{tikzpicture/edge_embedding.tex}
+%		\caption{Edge embedding with each vector representing edge features}
+%		\label{fig:edgeEmbedding}
+%	\end{subfigure}
+%	
+%	\begin{subfigure}[b]{0.3\textwidth}
+%		\centering
+%		\input{tikzpicture/substructure_embedding.tex}
+%		
+%		\caption{Embedding a graph substructure}
+%		\label{fig:substructureEmbedding}
+%	\end{subfigure}
+%	\begin{subfigure}[b]{0.3\textwidth}
+%		\centering
+%		
+%		\input{tikzpicture/whole_graph_embedding.tex}
+%		
+%		
+%		\caption{Whole-graph embedding}
+%		\label{fig:wholeGraphEmbedding}
+%	\end{subfigure}
+%	
+%	\caption{Graph embedding methods.}
+%	\label{fig:GraphEmbeddingMethods}
+%\end{figure*}
 
 
 
@@ -398,12 +262,12 @@ While the input is determined by the type of information to be preserved, the ou
 
 
 
-Node embedding represents each node as a low-dimensional vector. Nodes that are \textit{close} in the graph have similar vector representations. The difference among graph embedding methods lies in how they define the \textit{closeness} between two nodes. First-order proximity (Definition \ref{def:firstOrderProximity}) and second-order proximity (Definition \ref{def:secondOrderProximity}) are two commonly used metrics to measure pairwise node similarity. Higher-order proximity has also been explored to some extent. For example, capturing k-step (k = 1, 2, 3, ···) neighborhood relationships during embedding is discussed in the study by Cao, Shaosheng \cite{cao2015grarep}.
+Node embedding \autoref{fig:nodeEmbedding} represents each node as a low-dimensional vector. Nodes that are \textit{close} in the graph have similar vector representations. The difference among graph embedding methods lies in how they define the \textit{closeness} between two nodes. First-order proximity (Definition \ref{def:firstOrderProximity}) and second-order proximity (Definition \ref{def:secondOrderProximity}) are two commonly used metrics to measure pairwise node similarity. Higher-order proximity has also been explored to some extent. For example, capturing k-step (k = 1, 2, 3, ···) neighborhood relationships during embedding is discussed in the study by Cao, Shaosheng \cite{cao2015grarep}.
 
 \textbf{Edge Embedding}
 \label{sec:edgeEmbedding}
 
-In contrast to node embedding, edge embedding aims to represent an edge as a low-dimensional vector. Edge embedding is useful in two cases:
+In contrast to node embedding, edge embedding \autoref{fig:edgeEmbedding} aims to represent an edge as a low-dimensional vector. Edge embedding is useful in two cases:
 
 First, in knowledge graph embedding. Each edge is a triple $\langle h, r, t \rangle$ (Definition \ref{def:knowledgeGraph}). The embedding is learned to preserve the relation $r$ between $h$ and $t$ in the embedding space so that a missing entity or relation can be accurately predicted given the other two components in $\langle h, r, t \rangle$.
 
@@ -413,11 +277,11 @@ Second, some methods embed a pair of nodes as a vector to compare it with other 
 
 
 
-Hybrid embedding refers to embedding combinations of different graph components, e.g., node + edge (i.e., substructure), or node + parts. Substructure or part embeddings can also be derived by aggregating individual node and edge embeddings. However, such \textit{indirect} approaches are not optimized to capture the structure of the graph. Moreover, node and part embeddings can reinforce each other. Node embeddings improve by learning from high-order neighborhood attention, while part embeddings become more accurate due to the collective behavior of their constituent nodes.
+Hybrid embedding refers to embedding combinations of different graph components, e.g., node + edge (i.e., substructure), or node + parts. Substructure or part embeddings \autoref{fig:substructureEmbedding} can also be derived by aggregating individual node and edge embeddings. However, such \textit{indirect} approaches are not optimized to capture the structure of the graph. Moreover, node and part embeddings can reinforce each other. Node embeddings improve by learning from high-order neighborhood attention, while part embeddings become more accurate due to the collective behavior of their constituent nodes.
 
 \textbf{Whole-Graph Embedding}
 
-Whole-graph embedding is typically used for small graphs such as proteins, molecules, etc. In this case, an entire graph is represented as a vector, and similar graphs are embedded close to each other. Whole-graph embedding is useful for graph classification tasks by providing a simple and effective solution for computing graph similarity. To balance embedding time (efficiency) and information retention (expressiveness), \textbf{hierarchical graph embedding} \cite{mousavi2017hierarchical} introduces a hierarchical embedding framework. It argues that accurate understanding of global graph information requires processing substructures at multiple scales. A graph pyramid is formed where each level is a coarsened graph at a different scale. The graph is embedded at all levels and then concatenated into a single vector. Whole-graph embedding requires collecting features from the entire graph, thus is generally more time-consuming than other settings.
+Whole-graph embedding \autoref{fig:wholeGraphEmbedding} is typically used for small graphs such as proteins, molecules, etc. In this case, an entire graph is represented as a vector, and similar graphs are embedded close to each other. Whole-graph embedding is useful for graph classification tasks by providing a simple and effective solution for computing graph similarity. To balance embedding time (efficiency) and information retention (expressiveness), \textbf{hierarchical graph embedding} \cite{mousavi2017hierarchical} introduces a hierarchical embedding framework. It argues that accurate understanding of global graph information requires processing substructures at multiple scales. A graph pyramid is formed where each level is a coarsened graph at a different scale. The graph is embedded at all levels and then concatenated into a single vector. Whole-graph embedding requires collecting features from the entire graph, thus is generally more time-consuming than other settings.
 
 
 \subsubsection{Graph Embedding Techniques}
