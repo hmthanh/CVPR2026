@@ -1,5 +1,93 @@
-% \subsection{Formatting your paper}
-% \label{sec:formatting}
+
+\begin{figure*}[htp]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{tikzpicture}[
+			entityStyle/.style={draw, color=white, thin, align=center, circle, text width=20mm},
+			us/.style = {entityStyle, fill=amber},
+			entity/.style={entityStyle, fill=azure},
+			arrowStyle/.style={-latex', >=stealth },
+			entityId/.style={draw, color=white,  thin, align=center, circle},]
+			
+			\node[us] (us) {\textbf{U.S}};
+			
+			\begin{scope}[every node/.style={entity}]
+				\node[above left=2cm of us, xshift=-20mm] (c1) {\textbf{Donald Trump}};
+				\node[above right=2cm of us, xshift=1cm] (c2) {\textbf{Jeff Bezos}};
+				\node[below left=2cm of us, xshift=-20mm] (c3) {\textbf{New York}};
+				\node[below right=2cm of us, xshift=1cm] (c4) {\textbf{Tesla Inc.}};
+				
+				\node[below left=3cm of c1, yshift=25mm, xshift=-15mm] (c1x) {\textbf{Melania Trump}};
+				\node[above left=3cm of c3, yshift=-25mm, xshift=-15mm] (c3x) {\textbf{Tom Cruise}};
+				
+				%\node[left=1cm of c1x, yshift=25mm, xshift=-15mm] (c8) {\textbf{Thanh}};
+			\end{scope}
+			
+			%\draw[->, line width=0.8mm, azure] (c8) -> (c1x);
+			%\path[arrowStyle] (c8)--node[rotate=-31, yshift=4mm]{friend\_of} %node[rotate=-31, yshift=-3mm]{} (c1x);
+			
+			\foreach \value in {1,...,4}
+			\draw[->, line width=0.8mm, azure] (c\value) -> (us);
+			\foreach \value in {1,3}
+			\draw[->, line width=0.8mm, azure] (c\value x) -> (c\value);
+			
+			\foreach \value in {1,3}
+			\draw[->, line width=0.8mm, azure!60, dash pattern=on 3mm off 1mm, postaction={decorate}] (c\value x) -> (us);
+			
+			\path[arrowStyle] (c1)--node[rotate=-31, yshift=4mm]{president\_of} node[rotate=-31, yshift=-3mm]{$\alpha_{i4}$} (us);
+			
+			\path[arrowStyle] (c3)--node[rotate=30, yshift=4mm]{state\_of} node[rotate=30, yshift=-4mm]{$\alpha_{i3}$} (us);
+			
+			\path[arrowStyle] (c2)--node[rotate=41, yshift=4mm]{richest\_of} node[rotate=41, yshift=-4mm]{$\alpha_{i1}$} (us);
+			
+			\path[arrowStyle] (c4)--node[rotate=-41, yshift=4mm]{founded\_in} node[rotate=-41, yshift=-4mm]{$\alpha_{i2}$} (us);
+			
+			\path[arrowStyle] (c1x)--node[rotate=15, yshift=4mm]{wife\_of} (c1);
+			\path[arrowStyle] (c3x)--node[rotate=-15, yshift=4mm]{born\_in} (c3);
+			
+			\path[arrowStyle] (c1x)--node[rotate=-8, yshift=4mm]{\textbf{first\_lady}} node[rotate=-8, yshift=-3mm]{$\alpha_{i5}$} (us);
+			\path[arrowStyle] (c3x)--node[rotate=8, yshift=4mm]{\textbf{native\_of}} node[rotate=8, yshift=-3mm]{$\alpha_{i6}$} (us);
+			
+			%%%%%%%%%%%
+			\node[entityId][fill=amber][right=11cm of us] (country) {$e_3$};
+			\path[arrowStyle] (us)--node[yshift=2mm]{\LARGE $\rightarrow$} (country);
+			
+			\begin{scope}[every node/.style={entityId, fill=azure}]
+				\node[above left=1cm of country, xshift=-5mm] (c1s) {$e_2$};
+				\node[above right=1cm of country, xshift=5mm] (c2s) {$e_4$};
+				\node[below left=1cm of country, xshift=-5mm] (c3s) {$e_6$};
+				\node[below right=1cm of country, xshift=5mm] (c4s) {$e_7$};
+				
+				\node[below left=1.5cm of c1s, yshift=15mm, xshift=-5mm] (c1xs) {$e_1$};
+				\node[above left=1.5cm of c3s, yshift=-15mm, xshift=-5mm] (c3xs) {$e_5$};
+			\end{scope}
+			\foreach \value in {1,...,4}
+			\draw[->, line width=0.8mm, azure] (c\value s) -> (country);
+			\foreach \value in {1,3}
+			\draw[->, line width=0.8mm, azure] (c\value xs) -> (c\value s);
+			
+			\foreach \value in {1,3}
+			\draw[->, line width=0.8mm, azure!60, dash pattern=on 3mm off 1mm, postaction={decorate}] (c\value xs) -> (country);
+			
+			\path[arrowStyle] (c1s)--node[rotate=-31, yshift=2mm]{$r_2$} (country);
+			
+			\path[arrowStyle] (c3s)--node[rotate=30, yshift=2mm]{$r_5$} (country);
+			
+			\path[arrowStyle] (c2s)--node[rotate=41, yshift=2mm]{$r_3$} (country);
+			
+			\path[arrowStyle] (c4s)--node[rotate=-41, yshift=2mm]{$r_6$} (country);
+			
+			\path[arrowStyle] (c1xs)--node[rotate=15, yshift=2mm]{$r_1$} (c1s);
+			\path[arrowStyle] (c3xs)--node[rotate=-15, yshift=2mm]{$r_4$} (c3s);
+			
+			\path[arrowStyle] (c1xs)--node[rotate=-8, yshift=2mm]{$r_7$} (country);
+			\path[arrowStyle] (c3xs)--node[rotate=8, yshift=2mm]{$r_8$} (country);
+		\end{tikzpicture}
+	}
+	\caption{Knowledge graph and normalized attention coefficients of the entity}
+	\label{fig:graphExample}
+\end{figure*}
+
 
 \section{RELATED WORK}
 \label{chap:RelatedWork}
@@ -17,47 +105,6 @@ The basic definitions of knowledge graphs are compiled and categorized by Cai, H
 %	\label{fig:graphInput}
 %\end{figure}
 
-\begin{figure}[htp]
-	\centering
-\begin{tikzpicture}[
-	node/.style={circle, draw, minimum size=12mm, font=\bfseries, text=black},
-	green/.style={fill=green!30},
-	orange/.style={fill=orange!30},
-	blue/.style={fill=blue!30},
-	every edge/.style={draw, thick},
-	scale=1.2
-	]
-	
-	% Nodes with more spacing
-	\node[node, green] (1) at (0,5) {1};
-	\node[node, green] (2) at (4,4.6) {2};
-	\node[node, green] (3) at (2,3.5) {3};
-	
-	\node[node, orange] (4) at (0.5,1.8) {4};
-	\node[node, orange] (5) at (3,0.5) {5};
-	\node[node, orange] (6) at (2.3,2) {6};
-	
-	\node[node, blue] (7) at (4.3,2) {7};
-	\node[node, blue] (8) at (5.2,0.5) {8};
-	\node[node, blue] (9) at (5.2,3.2) {9};
-	
-	% Edges with weights above
-	\draw (1) -- (3) node[midway, above left=1mm] {1.5};
-	\draw (1) -- (2) node[midway, above right=1mm] {1.2};
-	\draw (2) -- (3) node[midway, above=1mm] {0.8};
-	
-	\draw (3) -- (4) node[midway, left=1mm] {0.3};
-	\draw (4) -- (6) node[midway, above=1mm] {1};
-	\draw (4) -- (5) node[midway, below left=1mm] {1.5};
-	\draw (5) -- (6) node[midway, right=1mm] {0.6};
-	\draw (6) -- (7) node[midway, above=1mm] {0.2};
-	\draw (7) -- (8) node[midway, below=1mm] {1.5};
-	\draw (7) -- (9) node[midway, above=1mm] {1};
-	
-\end{tikzpicture}
-	\caption{Example of an input graph}
-	\label{fig:graphInput}
-\end{figure}
 
 \begin{itemize}
 	\item \begin{definition}[Graph]\label{def:defGraph}
@@ -98,7 +145,7 @@ Most current research on link prediction in knowledge graphs is related to appro
 
 As mentioned earlier, there are two main approaches to this problem: one is optimizing an objective function to find a small set of rules that cover the majority of correct examples with minimal error, as explored in RuDiK \cite{ortona2018robust}. The other approach, which we adopt in this thesis, aims to explore all possible rules and then generate a top-\(k\) ranking of candidate triples, each associated with a confidence score measured on the training set.
 
-Our rule-based method is largely based on the \textit{Anytime Bottom-Up Rule Learning for Knowledge Graph Completion} method \cite{meilicke2019anytime}, hereafter referred to as \textbf{AnyBURL}. As its name suggests, this method primarily focuses on completing the graph by filling in missing parts. A key limitation of this model is that when a new edge or fact is added to the graph, the entire model must be retrained. We address this issue using two strategies: the \textit{offline-to-online} strategy, which retrains a portion of the graph only after a batch of new edges is added; and the \textit{online-to-online} strategy, which immediately retrains the affected portion of the graph whenever a new edge is added.
+% Our rule-based method is largely based on the \textit{Anytime Bottom-Up Rule Learning for Knowledge Graph Completion} method \cite{meilicke2019anytime}, hereafter referred to as \textbf{AnyBURL}. As its name suggests, this method primarily focuses on completing the graph by filling in missing parts. A key limitation of this model is that when a new edge or fact is added to the graph, the entire model must be retrained. We address this issue using two strategies: the \textit{offline-to-online} strategy, which retrains a portion of the graph only after a batch of new edges is added; and the \textit{online-to-online} strategy, which immediately retrains the affected portion of the graph whenever a new edge is added.
 
 % GAT
 In the deep learning branch of approaches, many successful techniques from image processing and natural language processing have been applied to knowledge graphs, such as Convolutional Neural Networks (CNNs \cite{lecun1999object}), Recurrent Neural Networks (RNNs \cite{hopfield2007hopfield}), and more recently, Transformers \cite{yang2019xlnet} and Capsule Neural Networks (CapsNets \cite{sabour2017dynamic}). In addition, other techniques such as random walks and hierarchical structure-based models have also been explored. The common advantage of these deep learning methods on knowledge graphs is their ability to automatically extract features and generalize complex graph structures based on large amounts of training data. However, some methods focus mainly on grid-like structures and fail to preserve the spatial characteristics of knowledge graphs.

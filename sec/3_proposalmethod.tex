@@ -66,6 +66,49 @@ To understand graph embedding techniques, we begin with several fundamental defi
 \end{itemize}
 
 
+
+\begin{figure}[htp]
+	\centering
+	\begin{tikzpicture}[
+		node/.style={circle, draw, minimum size=12mm, font=\bfseries, text=black},
+		green/.style={fill=green!30},
+		orange/.style={fill=orange!30},
+		blue/.style={fill=blue!30},
+		every edge/.style={draw, thick},
+		scale=1.2
+		]
+		
+		% Nodes with more spacing
+		\node[node, green] (1) at (0,5) {1};
+		\node[node, green] (2) at (4,4.6) {2};
+		\node[node, green] (3) at (2,3.5) {3};
+		
+		\node[node, orange] (4) at (0.5,1.8) {4};
+		\node[node, orange] (5) at (3,0.5) {5};
+		\node[node, orange] (6) at (2.3,2) {6};
+		
+		\node[node, blue] (7) at (4.3,2) {7};
+		\node[node, blue] (8) at (5.2,0.5) {8};
+		\node[node, blue] (9) at (5.2,3.2) {9};
+		
+		% Edges with weights above
+		\draw (1) -- (3) node[midway, above left=1mm] {1.5};
+		\draw (1) -- (2) node[midway, above right=1mm] {1.2};
+		\draw (2) -- (3) node[midway, above=1mm] {0.8};
+		
+		\draw (3) -- (4) node[midway, left=1mm] {0.3};
+		\draw (4) -- (6) node[midway, above=1mm] {1};
+		\draw (4) -- (5) node[midway, below left=1mm] {1.5};
+		\draw (5) -- (6) node[midway, right=1mm] {0.6};
+		\draw (6) -- (7) node[midway, above=1mm] {0.2};
+		\draw (7) -- (8) node[midway, below=1mm] {1.5};
+		\draw (7) -- (9) node[midway, above=1mm] {1};
+		
+	\end{tikzpicture}
+	\caption{Example of an input graph}
+	\label{fig:graphInput}
+\end{figure}
+
 Graph embedding is the process of transforming graph features into vectors or sets of low-dimensional vectors. The more effective the embedding, the higher the accuracy in subsequent graph mining and analysis tasks. The biggest challenge in graph embedding depends on the problem setting, which includes both the embedding input and output, as illustrated in \autoref{fig:graphEmbeddingSettingTree}.
 
 \begin{figure}[htp]
@@ -129,151 +172,236 @@ However, in some cases, the tasks may involve more fine-grained graph components
 
 While the input is determined by the type of information to be preserved, the output varies depending on the downstream graph mining task. Therefore, we discuss in more detail the embedding methods based on the type of output required by the embedding problem.
 
+
+
+\begin{figure*}[htbp]
+	\centering
+	
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				axis lines=box,
+				xmin=0, xmax=3,
+				ymin=-3, ymax=3,
+				xtick={0, 0.75, 1.5, 2.25, 3},
+				ytick={-3, -1.5, 0, 1.5, 3},
+				grid=both,
+				grid style={line width=0.3pt, draw=gray!30},
+				major grid style={line width=0.4pt, draw=gray!50},
+				ticklabel style={font=\small},
+				width=\textwidth, height=\textwidth,
+				enlargelimits=false,
+				scatter/classes={
+					a={mark=*,draw=black,fill=green!50},
+					b={mark=*,draw=black,fill=orange!60},
+					c={mark=*,draw=black,fill=blue!60}
+				},
+				axis on top,
+				clip=false
+				]
+				
+				% Plot points
+				\addplot[
+				scatter, only marks, scatter src=explicit symbolic, mark size=2.8pt
+				] table[meta=class] {
+					x     y     label  class
+					0.4   1.8   1       a
+					0.6   1.2   3       a
+					0.8   2.2   2       a
+					
+					0.9   0.5   4       b
+					1.0   0.0   5       b
+					1.3   0.2   6       b
+					
+					1.7   0.3   7       c
+					1.6  -0.3   8       c
+					2.0  -0.2   9       c
+				};
+				
+				% Labels placed further above the nodes
+				\node[font=\bfseries] at (axis cs:0.4,2.1) {1};
+				\node[font=\bfseries] at (axis cs:0.6,1.5) {3};
+				\node[font=\bfseries] at (axis cs:0.8,2.5) {2};
+				
+				\node[font=\bfseries] at (axis cs:0.9,0.8) {4};
+				\node[font=\bfseries] at (axis cs:1.0,0.3) {5};
+				\node[font=\bfseries] at (axis cs:1.3,0.5) {6};
+				
+				\node[font=\bfseries] at (axis cs:1.7,0.6) {7};
+				\node[font=\bfseries] at (axis cs:1.6,-0.0) {8};
+				\node[font=\bfseries] at (axis cs:2.0,0.1) {9};
+				
+			\end{axis}
+		\end{tikzpicture}
+		
+		\caption{
+			Node embedding with each vector representing node features}
+		\label{fig:nodeEmbedding}
+	\end{subfigure}
+	
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		
+		\begin{tikzpicture}
+			\begin{axis}[
+				axis lines=box,
+				xmin=0, xmax=3,
+				ymin=-3, ymax=3,
+				xtick={0, 0.75, 1.5, 2.25, 3},
+				ytick={-3, -1.5, 0, 1.5, 3},
+				grid=both,
+				grid style={line width=0.3pt, draw=gray!30},
+				major grid style={line width=0.4pt, draw=gray!50},
+				ticklabel style={font=\small},
+				width=\textwidth, height=\textwidth,
+				enlargelimits=false,
+				scatter/classes={
+					green={mark=triangle*,draw=black,fill=green!50},
+					orange={mark=triangle*,draw=black,fill=orange!60},
+					blue={mark=triangle*,draw=black,fill=blue!60},
+					yellow={mark=triangle*,draw=black,fill=yellow!80},
+					purple={mark=triangle*,draw=black,fill=violet!70}
+				},
+				axis on top,
+				clip=false
+				]
+				
+				% Plot edge embeddings as triangles
+				\addplot[
+				scatter, only marks, scatter src=explicit symbolic, mark size=4pt
+				] table[meta=class] {
+					x     y     label   class
+					0.5   0.2   e_{13}  green
+					0.7   1.1   e_{12}  green
+					1.2   1.1   e_{23}  green
+					
+					0.8   0.3   e_{45}  orange
+					1.0   0.0   e_{46}  orange
+					1.8   0.1   e_{56}  orange
+					
+					0.4  -0.8   e_{78}  blue
+					0.8  -1.3   e_{79}  blue
+					
+					2.0  -0.8   e_{67}  purple
+					2.2  -1.0   e_{34}  yellow
+				};
+				
+				% Labels near triangles
+				\node[font=\bfseries] at (axis cs:0.5,0.45) {e\textsubscript{13}};
+				\node[font=\bfseries] at (axis cs:0.7,1.35) {e\textsubscript{12}};
+				\node[font=\bfseries] at (axis cs:1.2,1.35) {e\textsubscript{23}};
+				
+				\node[font=\bfseries] at (axis cs:0.8,0.55) {e\textsubscript{45}};
+				\node[font=\bfseries] at (axis cs:1.0,0.3) {e\textsubscript{46}};
+				\node[font=\bfseries] at (axis cs:1.8,0.35) {e\textsubscript{56}};
+				
+				\node[font=\bfseries] at (axis cs:0.4,-0.55) {e\textsubscript{78}};
+				\node[font=\bfseries] at (axis cs:0.8,-1.05) {e\textsubscript{79}};
+				
+				\node[font=\bfseries] at (axis cs:2.0,-0.55) {e\textsubscript{67}};
+				\node[font=\bfseries] at (axis cs:2.2,-0.75) {e\textsubscript{34}};
+				
+			\end{axis}
+		\end{tikzpicture}
+		
+		\caption{Edge embedding with each vector representing edge features}
+		\label{fig:edgeEmbedding}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				axis lines=box,
+				xmin=0, xmax=3,
+				ymin=-3, ymax=3,
+				xtick={0, 0.75, 1.5, 2.25, 3},
+				ytick={-3, -1.5, 0, 1.5, 3},
+				grid=both,
+				grid style={line width=0.3pt, draw=gray!30},
+				major grid style={line width=0.4pt, draw=gray!50},
+				ticklabel style={font=\small},
+				width=\textwidth, height=\textwidth,
+				enlargelimits=false,
+				scatter/classes={
+					green={mark=diamond*,draw=black,fill=green!50},
+					orange={mark=diamond*,draw=black,fill=orange!60},
+					blue={mark=diamond*,draw=black,fill=blue!60}
+				},
+				axis on top,
+				clip=false
+				]
+				
+				% Cluster centroids
+				\addplot[
+				scatter, only marks, scatter src=explicit symbolic, mark size=4pt
+				] table[meta=class] {
+					x     y     label       class
+					2.0   0.5   G_{1,2,3}    green
+					1.5   0.0   G_{4,5,6}    orange
+					1.0  -1.5   G_{7,8,9}    blue
+				};
+				
+				% Cluster labels near markers
+				\node[font=\bfseries\Large] at (axis cs:2.0,0.85)  {G\textsubscript{\{1,2,3\}}};
+				\node[font=\bfseries\Large] at (axis cs:1.5,0.35)  {G\textsubscript{\{4,5,6\}}};
+				\node[font=\bfseries\Large] at (axis cs:1.0,-1.15) {G\textsubscript{\{7,8,9\}}};
+				
+			\end{axis}
+		\end{tikzpicture}
+		
+		\caption{Embedding a graph substructure}
+		\label{fig:substructureEmbedding}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				axis lines=box,
+				xmin=0, xmax=3,
+				ymin=-3, ymax=3,
+				xtick={0, 0.75, 1.5, 2.25, 3},
+				ytick={-3, -1.5, 0, 1.5, 3},
+				grid=both,
+				grid style={line width=0.3pt, draw=gray!30},
+				major grid style={line width=0.4pt, draw=gray!50},
+				ticklabel style={font=\small},
+				width=\textwidth, height=\textwidth,
+				enlargelimits=false,
+				axis on top,
+				clip=false
+				]
+				
+				% Manually place a filled black hexagon
+				\node[regular polygon, regular polygon sides=6, minimum size=8pt,
+				fill=black, draw=black] at (axis cs:1.2,0.4) {};
+				
+				% Label G1 near the hexagon
+				\node[font=\bfseries\Large] at (axis cs:1.0,0.0) {G\textsubscript{1}};
+				
+			\end{axis}
+		\end{tikzpicture}
+		
+		\caption{Whole-graph embedding}
+		\label{fig:wholeGraphEmbedding}
+	\end{subfigure}
+	
+	\caption{Graph embedding methods.}
+	\label{fig:GraphEmbeddingMethods}
+\end{figure*}
+
+
+
 \textbf{Node Embedding}
 \label{sec:nodeEmbedding}
 
 
 
-\begin{figure}[htp]
-	\centering
-	
-	
-	\begin{tikzpicture}
-		\begin{axis}[
-			axis lines=box,
-			xmin=0, xmax=3,
-			ymin=-3, ymax=3,
-			xtick={0, 0.75, 1.5, 2.25, 3},
-			ytick={-3, -1.5, 0, 1.5, 3},
-			grid=both,
-			grid style={line width=0.3pt, draw=gray!30},
-			major grid style={line width=0.4pt, draw=gray!50},
-			ticklabel style={font=\small},
-			width=8cm, height=8cm,
-			enlargelimits=false,
-			scatter/classes={
-				a={mark=*,draw=black,fill=green!50},
-				b={mark=*,draw=black,fill=orange!60},
-				c={mark=*,draw=black,fill=blue!60}
-			},
-			axis on top,
-			clip=false
-			]
-			
-			% Plot points
-			\addplot[
-			scatter, only marks, scatter src=explicit symbolic, mark size=2.8pt
-			] table[meta=class] {
-				x     y     label  class
-				0.4   1.8   1       a
-				0.6   1.2   3       a
-				0.8   2.2   2       a
-				
-				0.9   0.5   4       b
-				1.0   0.0   5       b
-				1.3   0.2   6       b
-				
-				1.7   0.3   7       c
-				1.6  -0.3   8       c
-				2.0  -0.2   9       c
-			};
-			
-			% Labels placed further above the nodes
-			\node[font=\bfseries] at (axis cs:0.4,2.1) {1};
-			\node[font=\bfseries] at (axis cs:0.6,1.5) {3};
-			\node[font=\bfseries] at (axis cs:0.8,2.5) {2};
-			
-			\node[font=\bfseries] at (axis cs:0.9,0.8) {4};
-			\node[font=\bfseries] at (axis cs:1.0,0.3) {5};
-			\node[font=\bfseries] at (axis cs:1.3,0.5) {6};
-			
-			\node[font=\bfseries] at (axis cs:1.7,0.6) {7};
-			\node[font=\bfseries] at (axis cs:1.6,-0.0) {8};
-			\node[font=\bfseries] at (axis cs:2.0,0.1) {9};
-			
-		\end{axis}
-	\end{tikzpicture}
-	
-	\caption{
-		Node embedding with each vector representing node features}
-	\label{fig:nodeEmbedding}
-\end{figure}
-
 Node embedding represents each node as a low-dimensional vector. Nodes that are \textit{close} in the graph have similar vector representations. The difference among graph embedding methods lies in how they define the \textit{closeness} between two nodes. First-order proximity (Definition \ref{def:firstOrderProximity}) and second-order proximity (Definition \ref{def:secondOrderProximity}) are two commonly used metrics to measure pairwise node similarity. Higher-order proximity has also been explored to some extent. For example, capturing k-step (k = 1, 2, 3, ···) neighborhood relationships during embedding is discussed in the study by Cao, Shaosheng \cite{cao2015grarep}.
 
 \textbf{Edge Embedding}
 \label{sec:edgeEmbedding}
-
-
-\begin{figure}[htp]
-	\centering
-	
-	
-	\begin{tikzpicture}
-		\begin{axis}[
-			axis lines=box,
-			xmin=0, xmax=3,
-			ymin=-3, ymax=3,
-			xtick={0, 0.75, 1.5, 2.25, 3},
-			ytick={-3, -1.5, 0, 1.5, 3},
-			grid=both,
-			grid style={line width=0.3pt, draw=gray!30},
-			major grid style={line width=0.4pt, draw=gray!50},
-			ticklabel style={font=\small},
-			width=8cm, height=8cm,
-			enlargelimits=false,
-			scatter/classes={
-				green={mark=triangle*,draw=black,fill=green!50},
-				orange={mark=triangle*,draw=black,fill=orange!60},
-				blue={mark=triangle*,draw=black,fill=blue!60},
-				yellow={mark=triangle*,draw=black,fill=yellow!80},
-				purple={mark=triangle*,draw=black,fill=violet!70}
-			},
-			axis on top,
-			clip=false
-			]
-			
-			% Plot edge embeddings as triangles
-			\addplot[
-			scatter, only marks, scatter src=explicit symbolic, mark size=4pt
-			] table[meta=class] {
-				x     y     label   class
-				0.5   0.2   e_{13}  green
-				0.7   1.1   e_{12}  green
-				1.2   1.1   e_{23}  green
-				
-				0.8   0.3   e_{45}  orange
-				1.0   0.0   e_{46}  orange
-				1.8   0.1   e_{56}  orange
-				
-				0.4  -0.8   e_{78}  blue
-				0.8  -1.3   e_{79}  blue
-				
-				2.0  -0.8   e_{67}  purple
-				2.2  -1.0   e_{34}  yellow
-			};
-			
-			% Labels near triangles
-			\node[font=\bfseries] at (axis cs:0.5,0.45) {e\textsubscript{13}};
-			\node[font=\bfseries] at (axis cs:0.7,1.35) {e\textsubscript{12}};
-			\node[font=\bfseries] at (axis cs:1.2,1.35) {e\textsubscript{23}};
-			
-			\node[font=\bfseries] at (axis cs:0.8,0.55) {e\textsubscript{45}};
-			\node[font=\bfseries] at (axis cs:1.0,0.3) {e\textsubscript{46}};
-			\node[font=\bfseries] at (axis cs:1.8,0.35) {e\textsubscript{56}};
-			
-			\node[font=\bfseries] at (axis cs:0.4,-0.55) {e\textsubscript{78}};
-			\node[font=\bfseries] at (axis cs:0.8,-1.05) {e\textsubscript{79}};
-			
-			\node[font=\bfseries] at (axis cs:2.0,-0.55) {e\textsubscript{67}};
-			\node[font=\bfseries] at (axis cs:2.2,-0.75) {e\textsubscript{34}};
-			
-		\end{axis}
-	\end{tikzpicture}
-	
-	\caption{Edge embedding with each vector representing edge features}
-	\label{fig:edgeEmbedding}
-\end{figure}
 
 In contrast to node embedding, edge embedding aims to represent an edge as a low-dimensional vector. Edge embedding is useful in two cases:
 
@@ -285,91 +413,9 @@ Second, some methods embed a pair of nodes as a vector to compare it with other 
 
 
 
-\begin{figure}[htp]
-	\centering
-	
-	\begin{tikzpicture}
-		\begin{axis}[
-			axis lines=box,
-			xmin=0, xmax=3,
-			ymin=-3, ymax=3,
-			xtick={0, 0.75, 1.5, 2.25, 3},
-			ytick={-3, -1.5, 0, 1.5, 3},
-			grid=both,
-			grid style={line width=0.3pt, draw=gray!30},
-			major grid style={line width=0.4pt, draw=gray!50},
-			ticklabel style={font=\small},
-			width=8cm, height=8cm,
-			enlargelimits=false,
-			scatter/classes={
-				green={mark=diamond*,draw=black,fill=green!50},
-				orange={mark=diamond*,draw=black,fill=orange!60},
-				blue={mark=diamond*,draw=black,fill=blue!60}
-			},
-			axis on top,
-			clip=false
-			]
-			
-			% Cluster centroids
-			\addplot[
-			scatter, only marks, scatter src=explicit symbolic, mark size=4pt
-			] table[meta=class] {
-				x     y     label       class
-				2.0   0.5   G_{1,2,3}    green
-				1.5   0.0   G_{4,5,6}    orange
-				1.0  -1.5   G_{7,8,9}    blue
-			};
-			
-			% Cluster labels near markers
-			\node[font=\bfseries\Large] at (axis cs:2.0,0.85)  {G\textsubscript{\{1,2,3\}}};
-			\node[font=\bfseries\Large] at (axis cs:1.5,0.35)  {G\textsubscript{\{4,5,6\}}};
-			\node[font=\bfseries\Large] at (axis cs:1.0,-1.15) {G\textsubscript{\{7,8,9\}}};
-			
-		\end{axis}
-	\end{tikzpicture}
-	
-	\caption{Embedding a graph substructure}
-	\label{fig:substructureEmbedding}
-\end{figure}
-
 Hybrid embedding refers to embedding combinations of different graph components, e.g., node + edge (i.e., substructure), or node + parts. Substructure or part embeddings can also be derived by aggregating individual node and edge embeddings. However, such \textit{indirect} approaches are not optimized to capture the structure of the graph. Moreover, node and part embeddings can reinforce each other. Node embeddings improve by learning from high-order neighborhood attention, while part embeddings become more accurate due to the collective behavior of their constituent nodes.
 
 \textbf{Whole-Graph Embedding}
-
-
-\begin{figure}[htp]
-	\centering
-	
-	\begin{tikzpicture}
-		\begin{axis}[
-			axis lines=box,
-			xmin=0, xmax=3,
-			ymin=-3, ymax=3,
-			xtick={0, 0.75, 1.5, 2.25, 3},
-			ytick={-3, -1.5, 0, 1.5, 3},
-			grid=both,
-			grid style={line width=0.3pt, draw=gray!30},
-			major grid style={line width=0.4pt, draw=gray!50},
-			ticklabel style={font=\small},
-			width=8cm, height=8cm,
-			enlargelimits=false,
-			axis on top,
-			clip=false
-			]
-			
-			% Manually place a filled black hexagon
-			\node[regular polygon, regular polygon sides=6, minimum size=8pt,
-			fill=black, draw=black] at (axis cs:1.2,0.4) {};
-			
-			% Label G1 near the hexagon
-			\node[font=\bfseries\Large] at (axis cs:1.0,0.0) {G\textsubscript{1}};
-			
-		\end{axis}
-	\end{tikzpicture}
-	
-	\caption{Whole-graph embedding}
-	\label{fig:wholeGraphEmbedding}
-\end{figure}
 
 Whole-graph embedding is typically used for small graphs such as proteins, molecules, etc. In this case, an entire graph is represented as a vector, and similar graphs are embedded close to each other. Whole-graph embedding is useful for graph classification tasks by providing a simple and effective solution for computing graph similarity. To balance embedding time (efficiency) and information retention (expressiveness), \textbf{hierarchical graph embedding} \cite{mousavi2017hierarchical} introduces a hierarchical embedding framework. It argues that accurate understanding of global graph information requires processing substructures at multiple scales. A graph pyramid is formed where each level is a coarsened graph at a different scale. The graph is embedded at all levels and then concatenated into a single vector. Whole-graph embedding requires collecting features from the entire graph, thus is generally more time-consuming than other settings.
 
@@ -667,95 +713,6 @@ At this point, we have presented the attention mechanism for computing attention
 \subsection{Graph Attention Network}
 \label{sec:GAT}
 
-\begin{figure*}[htp]
-	\centering
-	\resizebox{\textwidth}{!}{%
-		\begin{tikzpicture}[
-			entityStyle/.style={draw, color=white, thin, align=center, circle, text width=20mm},
-			us/.style = {entityStyle, fill=amber},
-			entity/.style={entityStyle, fill=azure},
-			arrowStyle/.style={-latex', >=stealth },
-			entityId/.style={draw, color=white,  thin, align=center, circle},]
-			
-			\node[us] (us) {\textbf{U.S}};
-			
-			\begin{scope}[every node/.style={entity}]
-				\node[above left=2cm of us, xshift=-20mm] (c1) {\textbf{Donald Trump}};
-				\node[above right=2cm of us, xshift=1cm] (c2) {\textbf{Jeff Bezos}};
-				\node[below left=2cm of us, xshift=-20mm] (c3) {\textbf{New York}};
-				\node[below right=2cm of us, xshift=1cm] (c4) {\textbf{Tesla Inc.}};
-				
-				\node[below left=3cm of c1, yshift=25mm, xshift=-15mm] (c1x) {\textbf{Melania Trump}};
-				\node[above left=3cm of c3, yshift=-25mm, xshift=-15mm] (c3x) {\textbf{Tom Cruise}};
-				
-				%\node[left=1cm of c1x, yshift=25mm, xshift=-15mm] (c8) {\textbf{Thanh}};
-			\end{scope}
-			
-			%\draw[->, line width=0.8mm, azure] (c8) -> (c1x);
-			%\path[arrowStyle] (c8)--node[rotate=-31, yshift=4mm]{friend\_of} %node[rotate=-31, yshift=-3mm]{} (c1x);
-			
-			\foreach \value in {1,...,4}
-			\draw[->, line width=0.8mm, azure] (c\value) -> (us);
-			\foreach \value in {1,3}
-			\draw[->, line width=0.8mm, azure] (c\value x) -> (c\value);
-			
-			\foreach \value in {1,3}
-			\draw[->, line width=0.8mm, azure!60, dash pattern=on 3mm off 1mm, postaction={decorate}] (c\value x) -> (us);
-			
-			\path[arrowStyle] (c1)--node[rotate=-31, yshift=4mm]{president\_of} node[rotate=-31, yshift=-3mm]{$\alpha_{i4}$} (us);
-			
-			\path[arrowStyle] (c3)--node[rotate=30, yshift=4mm]{state\_of} node[rotate=30, yshift=-4mm]{$\alpha_{i3}$} (us);
-			
-			\path[arrowStyle] (c2)--node[rotate=41, yshift=4mm]{richest\_of} node[rotate=41, yshift=-4mm]{$\alpha_{i1}$} (us);
-			
-			\path[arrowStyle] (c4)--node[rotate=-41, yshift=4mm]{founded\_in} node[rotate=-41, yshift=-4mm]{$\alpha_{i2}$} (us);
-			
-			\path[arrowStyle] (c1x)--node[rotate=15, yshift=4mm]{wife\_of} (c1);
-			\path[arrowStyle] (c3x)--node[rotate=-15, yshift=4mm]{born\_in} (c3);
-			
-			\path[arrowStyle] (c1x)--node[rotate=-8, yshift=4mm]{\textbf{first\_lady}} node[rotate=-8, yshift=-3mm]{$\alpha_{i5}$} (us);
-			\path[arrowStyle] (c3x)--node[rotate=8, yshift=4mm]{\textbf{native\_of}} node[rotate=8, yshift=-3mm]{$\alpha_{i6}$} (us);
-			
-			%%%%%%%%%%%
-			\node[entityId][fill=amber][right=11cm of us] (country) {$e_3$};
-			\path[arrowStyle] (us)--node[yshift=2mm]{\LARGE $\rightarrow$} (country);
-			
-			\begin{scope}[every node/.style={entityId, fill=azure}]
-				\node[above left=1cm of country, xshift=-5mm] (c1s) {$e_2$};
-				\node[above right=1cm of country, xshift=5mm] (c2s) {$e_4$};
-				\node[below left=1cm of country, xshift=-5mm] (c3s) {$e_6$};
-				\node[below right=1cm of country, xshift=5mm] (c4s) {$e_7$};
-				
-				\node[below left=1.5cm of c1s, yshift=15mm, xshift=-5mm] (c1xs) {$e_1$};
-				\node[above left=1.5cm of c3s, yshift=-15mm, xshift=-5mm] (c3xs) {$e_5$};
-			\end{scope}
-			\foreach \value in {1,...,4}
-			\draw[->, line width=0.8mm, azure] (c\value s) -> (country);
-			\foreach \value in {1,3}
-			\draw[->, line width=0.8mm, azure] (c\value xs) -> (c\value s);
-			
-			\foreach \value in {1,3}
-			\draw[->, line width=0.8mm, azure!60, dash pattern=on 3mm off 1mm, postaction={decorate}] (c\value xs) -> (country);
-			
-			\path[arrowStyle] (c1s)--node[rotate=-31, yshift=2mm]{$r_2$} (country);
-			
-			\path[arrowStyle] (c3s)--node[rotate=30, yshift=2mm]{$r_5$} (country);
-			
-			\path[arrowStyle] (c2s)--node[rotate=41, yshift=2mm]{$r_3$} (country);
-			
-			\path[arrowStyle] (c4s)--node[rotate=-41, yshift=2mm]{$r_6$} (country);
-			
-			\path[arrowStyle] (c1xs)--node[rotate=15, yshift=2mm]{$r_1$} (c1s);
-			\path[arrowStyle] (c3xs)--node[rotate=-15, yshift=2mm]{$r_4$} (c3s);
-			
-			\path[arrowStyle] (c1xs)--node[rotate=-8, yshift=2mm]{$r_7$} (country);
-			\path[arrowStyle] (c3xs)--node[rotate=8, yshift=2mm]{$r_8$} (country);
-		\end{tikzpicture}
-	}
-	\caption{Knowledge graph and normalized attention coefficients of the entity}
-	\label{fig:graphExample}
-\end{figure*}
-
 With the success of the \textit{multi-head attention mechanism} in natural language processing, it has also been studied for applications in image processing models \cite{ramachandran2019stand}. Consequently, the multi-head attention mechanism has been explored for replacing convolutional operations in knowledge graph embedding models, such as Graph Convolutional Networks (GCNs \cite{kipf2016semi}). In this section, we present in detail how the attention mechanism from \ref{sec:attentionMechanism} is applied to graph embedding via the Graph Attention Network (GAT \cite{velivckovic2017graph}) method.
 
 The input to the \textit{graph attention network} model is a set of embedding vectors, randomly initialized from a normal distribution, representing features of each entity: $\mathbf{E} = \Big\{\overrightarrow{e_1}, \overrightarrow{e_2}, ...,  \overrightarrow{e_{N_e}}\Big\}$. The objective of the model is to transform this into a new output embedding matrix $\mathbf{E}'' = \Big\{\overrightarrow{e''_1}, \overrightarrow{e''_2}, ...,  \overrightarrow{e''_{N_e}}\Big\}$ capable of aggregating embedding information from neighboring entities. Here, $\mathbf{E} \in \mathbb{R}^{N_e \times D_{\text{in}}}$ and $\mathbf{E}'' \in \mathbb{R}^{N_e \times D''}$ denote the input and output embedding matrices for the entity set, respectively. $N_e$ is the number of entities, and $D_{\text{in}}$, $D''$ are the dimensions of the input and output embeddings.
@@ -911,216 +868,9 @@ Similar to the Word2Vec method \cite{mikolov2013efficient}, the model \textit{Tr
 Initially, the entity and relation embedding vectors are randomly initialized using a normal distribution with dimensionality $D_{\text{in}}$, and then normalized according to the size of the entity and relation embedding sets.
 
 
-Next, we perform sampling from the training dataset to obtain a batch of valid triples ($S_{\text{batch}}$). For each such triple, we sample an invalid triple by replacing either the head or the tail entity with a random entity from the entity set, yielding a batch of invalid triples ($S'_{\text{batch}}$). We then pair each valid triple with an invalid one to form the training batch ($T_{\text{batch}}$). Finally, we update the embedding vectors to satisfy the condition in \ref{eq:conditionTransE}.
-
-\begin{algorithm}[h]
-	\caption{TransE Embedding Learning Algorithm \protect\cite{bordes2013translating}}\label{alg:TransE}
-	\begin{algorithmic}[1]
-		\Statex \textbf{Input} :
-		Training set $S = {(h, r, t)}$, entity set $E$, relation set $R$, margin $\gamma$, embedding dimension $D_{\text{in}}$	
-		\Statex \textbf{Initialize}
-		\State $\overrightarrow{r} \leftarrow \text{uniform}(-\frac{6}{\sqrt{D_{\text{in}}}}, \frac{6}{\sqrt{D_{\text{in}}}})$ for each relation $r \in R$
-		\State $\overrightarrow{r} \leftarrow \frac{\overrightarrow{r}}{\|\overrightarrow{r}\|}$ for each $r \in R$
-		\State $\overrightarrow{e} \leftarrow \text{uniform}(-\frac{6}{\sqrt{D_{\text{in}}}}, \frac{6}{\sqrt{D_{\text{in}}}})$ for each entity $e \in E$
-		\Loop
-		\State $\overrightarrow{e} \leftarrow \frac{\overrightarrow{e}}{\|\overrightarrow{e}\|}$ for each $e \in E$
-		\State $S_{\text{batch}} \leftarrow \text{sample}(S, b)$  // sample minibatch of size $b$
-		\State $T_{\text{batch}} \leftarrow \varnothing $
-		\For {$(h, r, t) \in S_{\text{batch}}$}
-		\State $(h', r, t') \leftarrow \text{sample}(S'_{(h, r, t)})$ // sample from invalid triple set
-		\State $T_{\text{batch}} \leftarrow T_{\text{batch}} \cup \Big\{ \Big( (h, r, t), (h', r, t') \Big) \Big\}$
-		\EndFor
-		\Statex Update embeddings
-		\State $\sum_{\Big( (h, r, t), (h', r, t')\Big) \in T_{\text{batch}}} \nabla [\gamma + d(\overrightarrow{h} + \overrightarrow{r}, \overrightarrow{t}) - d(\overrightarrow{h'} + \overrightarrow{r}, \overrightarrow{t'})]_{+}$
-		\EndLoop
-		\Statex \textbf{Output} :
-		A set of embedding vectors with dimension $D_{\text{in}}$ representing entities and relations
-	\end{algorithmic}
-\end{algorithm}
-
-The TransE model proposed by Bordes, Antoine \cite{bordes2013translating} is presented in Algorithm \ref{alg:TransE}.
 
 
-The input of the TransE model is a training dataset where each element is a triple $(h, r, t)$. Here, $h, t \in E$ are the head and tail entities, and $r \in R$ is the relation. $\overrightarrow{e}$ and $\overrightarrow{r}$ are the embedding vectors of entities and relations respectively, and $\|\overrightarrow{e}\|$ and $\|\overrightarrow{r}\|$ denote the cardinalities of the entity and relation sets. $S$ and $S_{\text{batch}}$ represent the full training dataset and a sampled batch from it, respectively. $T_{\text{batch}}$ is a batch containing both valid and invalid triples used to compute the loss function \ref{eq:sampleTransE}.
-
-A \textit{valid triple} is one directly sampled from the training set ($S_{\text{batch}}$), while an \textit{invalid triple} is constructed by corrupting a valid triple ($S'_{\text{batch}}$) by replacing either the head or the tail entity with a randomly selected entity from the entity set:
-
-\begin{equation}
-	\label{eq:sampleTransE}
-	\centering
-	S'_{(h, r, t)} = \big\{ (h', r, t) | h' \in E \big\} \cup \big\{ (h, r, t') | t' \in E \big\}
-\end{equation}
-
-To achieve the goal of learning embedding vectors such that $\overrightarrow{h} + \overrightarrow{r} \approx \overrightarrow{t}$, the model aims for the tail embedding $\overrightarrow{t}$ of valid triples to lie close to $\overrightarrow{h} + \overrightarrow{r}$, while in invalid triples, the corrupted embedding $\overrightarrow{h'} + \overrightarrow{r}$ (or $\overrightarrow{t'}$) should lie far from $\overrightarrow{t}$ (or $\overrightarrow{h} + \overrightarrow{r}$), according to the following margin-based ranking loss function:
-
-\begin{equation}
-	\label{eq:KBGATLoss}
-	\centering
-	\mathcal{L} = \sum_{(h, r, t) \in S} \sum_{(h', r, t') \in S'_{(h, r, t)}} [d - d' + \gamma]_{+}
-\end{equation}
-
-
-% \begin{figure}[htp]
-% 	\centering
-% 	\begin{tikzpicture}[
-	% 		arrow/.style={->,thick},
-	% 		vector/.style={arrow, ultra thick},
-	% 		mapping/.style={->, thin},
-	% 		distArrow/.style={thin, <->},
-	% 		dashLine/.style={very thin, dash pattern=on 1mm off 0.5mm},
-	% 		formal/.style={font=\sffamily}]
-	
-	% 		\coordinate (root) at (0,0);
-	% 		\coordinate [formal, label=above left:$\overrightarrow{h'}$] (c1) at (-1.5, 3);
-	% 		\coordinate [formal, label=above:$\overrightarrow{t}$] (c2) at (2, 5);
-	% 		\coordinate [formal, label=above:$\overrightarrow{t'}$] (c3) at (3.2, 4.5);
-	% 		\coordinate [formal, label=above right :$\overrightarrow{h'} + \overrightarrow{r}$] (c4) at (4.5, 4);
-	% 		\coordinate [formal, label=right:$\overrightarrow{r}$] (c5) at (6, 1);
-	
-	% 		\draw [arrow] ([yshift=-1.5em] root) -> (0, 5) node (yaxis)[above] {$y$};
-	% 		\draw [arrow] ([xshift=-5em] root) -> (7, 0) node (xaxis)[above] {$x$};
-	
-	% 		\foreach \x in {1, 5}
-	% 		{\draw [vector, color=black] (root) -> (c1);}
-	% 		{\draw [vector, color=black] (root) -> (c2);}
-	% 		{\draw [vector, color=awesome] (root) -> (c3);}
-	% 		{\draw [vector, color=azure] (root) -> (c4);}
-	% 		{\draw [vector, color=black] (root) -> (c5);}
-	
-	% 		\draw [dashLine] (c2) -> (2, -1.5) node (mapc2){};
-	% 		\draw [dashLine] (c4) -> (4.5, -1.5) node (mapc4){};
-	
-	% 		\draw [dashLine, color=amber] (c3) -> (3.2, -0.7) node (mapc3){};
-	% 		\draw [dashLine, color=amber] (c4) -> (4.5, -0.7) node (mapc4){};
-	
-	% 		\draw [distArrow] (2, -1.5) node (map1c2) {} -> (3.5, -1.5) node (alpha)[yshift=2mm] {$\Delta$} -> (4.5, -1.5) node (mapc4){};
-	% 		\draw [distArrow] (3.2, -0.7) node (map1c3) {} -> (4, -0.7) node (alpha)[yshift=2mm] {$\Delta'$} ->  (4.5, -0.7) node (mapc4){};
-	% 	\end{tikzpicture}
-% 	\caption{Minh học về độ đo hàm loss trong TransE}
-% 	
-% \end{figure}
-
-
-
-% \begin{figure}[t]
-% 	\centering
-% %	\resizebox{\linewidth}{!}{%
-% %		\includegraphics{figures/transe.png}
-% %	}
-
-%  \begin{tikzpicture}[>=Stealth, scale=0.8]
-% 	% ------------------------------------------------------------------
-% 	% GRID & AXES
-% 	% ------------------------------------------------------------------
-% 	\draw[step=1cm, thin, gray!60] (-5,-1) grid (5,9);
-% 	\draw[very thick] (-5,0) -- (5,0);    % x–axis
-% 	\draw[very thick] (0,-1) -- (0,9);    % y–axis
-	
-% 	% ------------------------------------------------------------------
-% 	% STYLE DEFINITIONS
-% 	% ------------------------------------------------------------------
-% 	\tikzset{
-% 		point/.style = {circle, fill=blue!70, inner sep=2pt},
-% 		vblue/.style  = {thick, blue!70},
-% 		vblack/.style = {thick, black},
-% 		vred/.style   = {thick, red},
-% 		vgreen/.style = {thick, green!60!black},
-% 	}
-	
-% 	% ------------------------------------------------------------------
-% 	% POINTS & VECTORS
-% 	% ------------------------------------------------------------------
-% 	% 1.  h = (2, 3)   ----  A(1,1) → B(3,4)
-% 	\node[point,label=below left:A] (A) at (1,1) {};
-% 	\node[point,label=above right:B] (B) at (3,4) {};
-% 	\draw[vblue,->] (A) -- (B) node[midway, below right=2pt] {\small$h=(2,3)$};
-	
-% 	% 2.  r = (0, 2)   ----  C(1,3) → D(1,5)
-% 	\node[point,label=left:C]  (C) at (1,3) {};
-% 	\node[point,label=left:D]  (D) at (1,5) {};
-% 	\draw[vblack,->] (C) -- (D) node[midway, left=4pt] {\small$r=(0,2)$};
-	
-% 	% 3.  t' = (2, 1)  ----  E(2,6) → F(4,7)
-% 	\node[point,label=below left:E] (E) at (2,6) {};
-% 	\node[point,label=above right:F] (F) at (4,7) {};
-% 	\draw[vred,->] (E) -- (F) node[midway, above=2pt, sloped] {\small$t'=(2,1)$};
-	
-% 	% 4.  t = (-1, 2)  ----  G(-2,5) → H(-3,7)
-% 	\node[point,label=right:G] (G) at (-2,5) {};
-% 	\node[point,label=above left:H] (H) at (-3,7) {};
-% 	\draw[vgreen,->] (G) -- (H) node[midway, right=2pt] {\small$t=(-1,2)$};
-	
-% \end{tikzpicture}
-
-% 	\caption{Initial TransE embedding vector}
-% 	\label{fig:TransEEmbeddingBefore}
-% \end{figure}
-
-
-
-% \begin{figure}[htp]
-% 	\centering
-% 	%	\resizebox{\linewidth}{!}{%
-% 		%		\includegraphics{figures/transe.png}
-% 		%	}
-	
-% 	 \begin{tikzpicture}[>=Stealth, scale=0.8]
-% 	 	% ------------------------------------------------------------------
-% 	 	% GRID & AXES
-% 	 	% ------------------------------------------------------------------
-% 	 	\draw[step=1cm, thin, gray!60] (-5,-1) grid (5,9);
-% 	 	\draw[very thick] (-5,0) -- (5,0);    % x–axis
-% 	 	\draw[very thick] (0,-1) -- (0,9);    % y–axis
-	 	
-% 	 	% ------------------------------------------------------------------
-% 	 	% STYLE DEFINITIONS
-% 	 	% ------------------------------------------------------------------
-% 	 	\tikzset{
-% 	 		point/.style = {circle, fill=blue!70, inner sep=2pt},
-% 	 		vblue/.style  = {thick, blue!70},
-% 	 		vblack/.style = {thick, black},
-% 	 		vred/.style   = {thick, red},
-% 	 		vgreen/.style = {thick, green!60!black},
-% 	 		vdash/.style  = {thick, dashed, gray!80}
-% 	 	}
-	 	
-% 	 	% --- Points and vectors ---
-% 	 	% h = (2, 3): A → B
-% 	 	\node[point,label=below right:A] (A) at (1,3) {};
-% 	 	\node[point,label=right:B] (B) at (3,6	) {};
-% 	 	\draw[vblue,->] (A) -- (B) node[midway, below right=2pt] {\small$h=(2,3)$};
-	 	
-% 	 	% r = (0, 2): C → D
-% 	 	\node[point,label=below left:C] (C) at (1,3) {};
-% 	 	\node[point,label=left:D] (D) at (1,5) {};
-% 	 	\draw[vblack,->] (C) -- (D) node[midway, left=4pt] {\small$r=(0,2)$};
-	 	
-% 	 	% t' = (2, 1): E → F
-% 	 	\node[point,label=below:E] (E) at (2,6) {};
-% 	 	\node[point,label=above:F] (F) at (4,7) {};
-% 	 	\draw[vred,->] (E) -- (F) node[midway, above=2pt, sloped] {\small$t'=(2,1)$};
-	 	
-% 	 	% t = (-1, 2): G → H
-% 	 	\node[point,label=right:G] (G) at (-2,5) {};
-% 	 	\node[point,label=above:H] (H) at (-3,7) {};
-% 	 	\draw[vgreen,->] (G) -- (H) node[midway, right=2pt] {\small$t=(-1,2)$};
-	 	
-% 	 	% Additional points: K, I, J
-% 	 	\node[point,label=above left:K] (K) at (-2.5,6) {};
-% 	 	\node[point,label=above:I] (I) at (2.45,6.2) {};
-% 	 	\node[point,label=below:J] (J) at (2.6,5.4) {};
-	 	
-% 	 	% Dashed lines for distances
-% 	 	\draw[vdash] (K) -- (J) node[midway, below=3pt] {\small$d$};
-% 	 	\draw[vdash] (J) -- (I) node[midway, right=3pt] {\small$d'$};
-	 	
-% 	 \end{tikzpicture}
-	
-% 	\caption{TransE embedding vector after linear transformation}
-% 	\label{fig:TransEEmbeddingAfter}
-% \end{figure}
-
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
@@ -1229,19 +979,59 @@ To achieve the goal of learning embedding vectors such that $\overrightarrow{h} 
 		\caption{Embedding after transformation}
 		\label{fig:TransEEmbeddingAfter}
 	\end{subfigure}
-	\caption{TransE embedding model}
+	\caption{The TransE graph embedding vector}
 	\label{fig:TransEExplain}
-\end{figure}
+\end{figure*}
+
+Next, we perform sampling from the training dataset to obtain a batch of valid triples ($S_{\text{batch}}$). For each such triple, we sample an invalid triple by replacing either the head or the tail entity with a random entity from the entity set, yielding a batch of invalid triples ($S'_{\text{batch}}$). We then pair each valid triple with an invalid one to form the training batch ($T_{\text{batch}}$). Finally, we update the embedding vectors to satisfy the condition in \ref{eq:conditionTransE}.
+
+\begin{algorithm}
+	\caption{TransE Embedding Learning Algorithm \protect\cite{bordes2013translating}}\label{alg:TransE}
+	\begin{algorithmic}[1]
+		\Statex \textbf{Input} :
+		Training set $S = {(h, r, t)}$, entity set $E$, relation set $R$, margin $\gamma$, embedding dimension $D_{\text{in}}$	
+		\Statex \textbf{Initialize}
+		\State $\overrightarrow{r} \leftarrow \text{uniform}(-\frac{6}{\sqrt{D_{\text{in}}}}, \frac{6}{\sqrt{D_{\text{in}}}})$ for each relation $r \in R$
+		\State $\overrightarrow{r} \leftarrow \frac{\overrightarrow{r}}{\|\overrightarrow{r}\|}$ for each $r \in R$
+		\State $\overrightarrow{e} \leftarrow \text{uniform}(-\frac{6}{\sqrt{D_{\text{in}}}}, \frac{6}{\sqrt{D_{\text{in}}}})$ for each entity $e \in E$
+		\Loop
+		\State $\overrightarrow{e} \leftarrow \frac{\overrightarrow{e}}{\|\overrightarrow{e}\|}$ for each $e \in E$
+		\State $S_{\text{batch}} \leftarrow \text{sample}(S, b)$  // sample minibatch of size $b$
+		\State $T_{\text{batch}} \leftarrow \varnothing $
+		\For {$(h, r, t) \in S_{\text{batch}}$}
+		\State $(h', r, t') \leftarrow \text{sample}(S'_{(h, r, t)})$ // sample from invalid triple set
+		\State $T_{\text{batch}} \leftarrow T_{\text{batch}} \cup \Big\{ \Big( (h, r, t), (h', r, t') \Big) \Big\}$
+		\EndFor
+		\Statex Update embeddings
+		\State $\sum_{\Big( (h, r, t), (h', r, t')\Big) \in T_{\text{batch}}} \nabla [\gamma + d(\overrightarrow{h} + \overrightarrow{r}, \overrightarrow{t}) - d(\overrightarrow{h'} + \overrightarrow{r}, \overrightarrow{t'})]_{+}$
+		\EndLoop
+		\Statex \textbf{Output} :
+		A set of embedding vectors with dimension $D_{\text{in}}$ representing entities and relations
+	\end{algorithmic}
+\end{algorithm}
+
+The TransE model proposed by Bordes, Antoine \cite{bordes2013translating} is presented in Algorithm \ref{alg:TransE}.
 
 
-% \begin{figure}[htp]
-% 	\centering
-% 	\resizebox{\linewidth}{!}{%
-% 		\includegraphics{figures/transe.png}
-% 	}
-% 	\caption{TransE embedding vector after linear transformation}
-% 	\label{fig:TransEExplain}
-% \end{figure}
+The input of the TransE model is a training dataset where each element is a triple $(h, r, t)$. Here, $h, t \in E$ are the head and tail entities, and $r \in R$ is the relation. $\overrightarrow{e}$ and $\overrightarrow{r}$ are the embedding vectors of entities and relations respectively, and $\|\overrightarrow{e}\|$ and $\|\overrightarrow{r}\|$ denote the cardinalities of the entity and relation sets. $S$ and $S_{\text{batch}}$ represent the full training dataset and a sampled batch from it, respectively. $T_{\text{batch}}$ is a batch containing both valid and invalid triples used to compute the loss function \ref{eq:sampleTransE}.
+
+A \textit{valid triple} is one directly sampled from the training set ($S_{\text{batch}}$), while an \textit{invalid triple} is constructed by corrupting a valid triple ($S'_{\text{batch}}$) by replacing either the head or the tail entity with a randomly selected entity from the entity set:
+
+\begin{equation}
+	\label{eq:sampleTransE}
+	\centering
+	S'_{(h, r, t)} = \big\{ (h', r, t) | h' \in E \big\} \cup \big\{ (h, r, t') | t' \in E \big\}
+\end{equation}
+
+To achieve the goal of learning embedding vectors such that $\overrightarrow{h} + \overrightarrow{r} \approx \overrightarrow{t}$, the model aims for the tail embedding $\overrightarrow{t}$ of valid triples to lie close to $\overrightarrow{h} + \overrightarrow{r}$, while in invalid triples, the corrupted embedding $\overrightarrow{h'} + \overrightarrow{r}$ (or $\overrightarrow{t'}$) should lie far from $\overrightarrow{t}$ (or $\overrightarrow{h} + \overrightarrow{r}$), according to the following margin-based ranking loss function:
+
+\begin{equation}
+	\label{eq:KBGATLoss}
+	\centering
+	\mathcal{L} = \sum_{(h, r, t) \in S} \sum_{(h', r, t') \in S'_{(h, r, t)}} [d - d' + \gamma]_{+}
+\end{equation}
+
+
 
 Here, $\gamma > 0$ is the margin, and $h'$ and $t'$ are entities sampled as defined in Equation \ref{eq:sampleTransE}. $\Delta$ and $\Delta'$ represent the difference vectors for the embeddings in valid and invalid triples, respectively, with $d = \big\|\Delta \big\|_{1} = \big\| \overrightarrow{h} + \overrightarrow{r} - \overrightarrow{t} \big\|_{1}$ and $d' = \big\|\Delta' \big\|_{1} = \big\| \overrightarrow{h'} + \overrightarrow{r} - \overrightarrow{t'} \big\|_{1}$, where $\|\cdot\|_{1}$ denotes the L1 norm.
 
