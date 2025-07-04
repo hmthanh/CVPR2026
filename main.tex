@@ -10,6 +10,7 @@
 % Import additional packages in the preamble file, before hyperref
 \input{preamble}
 
+
 % It is strongly recommended to use hyperref, especially for the review version.
 % hyperref with option pagebackref eases the reviewers' job.
 % Please disable hyperref *only* if you encounter grave issues, 
@@ -20,41 +21,69 @@
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 \usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
 
+\input{package}
+
 %%%%%%%%% PAPER ID  - PLEASE UPDATE
 \def\paperID{*****} % *** Enter the Paper ID here
 \def\confName{CVPR}
 \def\confYear{2025}
 
 %%%%%%%%% TITLE - PLEASE UPDATE
-\title{\LaTeX\ Author Guidelines for \confName~Proceedings}
+\title{Graph Collaborative Attention Network for Link Prediction in Knowledge Graphs}
 
 %%%%%%%%% AUTHORS - PLEASE UPDATE
-\author{First Author\\
-Institution1\\
-Institution1 address\\
-{\tt\small firstauthor@i1.org}
+%\author{Thanh Hoang-Minh}
+%\email{hmthanhgm@gmail.com}
+%
+%\affiliation{
+%	\institution{OpenHuman.ai}
+%	\city{Ho Chi Minh City}
+%	\country{Vietnam}
+%}
+%
+%\affiliation{
+%	\institution{Department of Information Technology, VNUHCM - University of Science}
+%	\streetaddress{227 Nguyen Van Cu Street, Ward 4}
+%	\city{Ho Chi Minh City}
+%	%  \state{District 5}
+%	\postcode{70000}
+%	\country{Vietnam}
+%}
+
+
+
+\author{Thanh Hoang-Minh\\
+%OpenHuman.ai\\
+Department of Information Technology, VNUHCM - University of Science\\
+Ho Chi Minh City \\
+{\tt\small hmthanhgm@gmail.com}
 % For a paper whose authors are all at the same institution,
 % omit the following lines up until the closing ``}''.
 % Additional authors and addresses can be added with ``\and'',
 % just like the second author.
 % To save space, use either the email address or home page, not both
-\and
-Second Author\\
-Institution2\\
-First line of institution2 address\\
-{\tt\small secondauthor@i2.org}
+%\and
+%Second Author\\
+%Institution2\\
+%First line of institution2 address\\
+%{\tt\small secondauthor@i2.org}
 }
 
 \begin{document}
 \maketitle
 \input{sec/0_abstract}    
 \input{sec/1_intro}
-\input{sec/2_formatting}
-\input{sec/3_finalcopy}
+\input{sec/2_relatedwork}
+\input{sec/3_proposalmethod}
+\input{sec/4_experiment}
+%\input{sec/5_evaluation}
+\input{sec/6_conclusion}
+
+
 {
     \small
     \bibliographystyle{ieeenat_fullname}
-    \bibliography{main}
+    \bibliography{reference}
 }
 
 % WARNING: do not forget to delete the supplementary pages from your submission 

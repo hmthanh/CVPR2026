@@ -1,0 +1,33 @@
+\section{Conclusion}
+%\chapter{Kết luận}
+\label{chap:Conclusion}
+
+%Trong phần này chúng tôi sẽ trình bày các kết quả đạt được của mô hình chúng tôi, cũng như những phân tích của chúng tôi
+%trên các kết quả của các tập dữ liệu khác nhau để giải thích những điểm tốt và điểm cần cải thiện trên mô hình của chúng tôi trên tập dữ liệu đó. Từ đó chúng tôi xác định những hướng nghiên cứu để cải tiến trong tương lai.
+%% chúng tôi cố gắng tìm hiểu các đặc trưng của các bộ dữ liệu tương ứng để cố gắng lý  giải thích  tại sao mô hình của chúng tôi hoặc các công trình khác có được kết quả tốt trên tập dữ liệu tương ứng đó.
+%% Những kết quả của hai đề xuất của chúng tôi cũng như các dịnh hướng nghiên cứu của chúng tôi trong tương lai.
+%
+%Mặc dù kết quả chúng tôi cho thấy phương pháp dựa trên luật của chúng tôi có hiệu suất tương đương với các mô hình học sâu hiện đại (state-of-art) và có ưu thế vượt trội trong thời gian đào tạo khoảng 17 phút so với thời gian hàng giờ của phương pháp học sâu khác nhưng không phải là các mô hình học sâu này không đáng nghiên cứu. Chúng tôi cũng nhận thấy, với tập dữ liệu có nhiều loại quan hệ khác nhau như FreeBase, mô hình KBGAT nhờ sử dụng cơ chế chú ý đạt được kết quả tốt hơn so với tập WorldNet với số lượng các loại quan hệ ít hơn.
+
+Although our rule-based method demonstrates performance comparable to modern deep learning models (state-of-the-art), and clearly outperforms them in terms of training time—only about 17 minutes compared to several hours for deep learning models—this does not imply that deep learning models are not worth studying. On the contrary, through performance analysis across different datasets, we observed that for datasets with diverse relations like FreeBase, the KBGAT model using attention mechanisms yielded significantly better results than on datasets like WordNet, which contain fewer relation types. This highlights the potential of leveraging deep learning mechanisms tailored to the specific characteristics of each dataset.
+
+This shows that the attention mechanism, by incorporating relational embedding information, helps to better capture graph structures in datasets with a wide variety of relations.  
+For datasets with many similar and inverse triples such as FB15k and WN18RR, the rule-based model AnyBURL achieved superior results, whereas deep learning methods only achieved average performance compared to other methods.  
+The rule-based AnyBURL model performs better on datasets like FB15k and WN18RR; however, for datasets that have removed similar or inverse information, such as FB15k-237 and WN18RR, the rule-based method is less effective, since it relies on previously observed paths or links. In contrast, deep learning models represent relations and entities in a vector space to learn their interactions, allowing them to perform better on datasets like FB15k-237 and WN18RR than on FB15k and WN18.
+
+One of the main advantages of the rule-based approach is that the generated rules are interpretable during training and require significantly less training time compared to other methods. However, after the training phase, the rule-based method must iterate through all learned rules to make predictions. This is an area where deep learning models show better performance, as models like KBGAT can use the learned weights and computational layers to transform inputs into probabilistic predictions much faster. The drawback of deep learning approaches is their lack of interpretability during training, as well as the high computational cost. Regarding our two proposed algorithms for adding new knowledge to the graph, we found them to significantly outperform deep learning methods.
+
+
+
+
+% Ngược lại đối với các phương pháp dựa trên học sâu lại có ưu thế rất lớn trong các tập dữ liệu này do có thể dễ dàng tính toán độ gần của các luật mới cần đánh giá so với các luật đã học từ đó có một kết quả khá tốt.
+% Do đó chúng tôi cũng sẽ tiếp tục nghiên cứu các phương pháp học sâu và sẽ dùng phương pháp này làm đường cơ sở (base line) để so sánh với các nghiên cứu của chúng tôi trong tương lai.
+% Một điểm yếu nữa của mô hình đựa trên luật của chúng tôi là mặc dù thời gian học là vượt trội nhưng thời gian để tính toán đưa ra đự đoán khá lâu do phải duyệt qua tất cả các luật được sinh ra mới có thể đưa ra dự đoán.
+% Không giống như các phương pháp nhúng đồ thị khác thao tác này có thể dễ dàng tính toán.
+
+
+The graph embedding process helps represent the features of entities, relations, or the characteristics of the knowledge graph as lower-dimensional vectors (\autoref{sec:graphEmbedding}). However, in practice, a piece of knowledge represented by entities and relations is entirely independent between these components; thus, they should be embedded into vectors with different dimensionalities. The ratio of dimensions between entities and relations is also an important issue that requires further investigation. 
+
+Additionally, in the real world, the temporal factor is a critical piece of information that can completely alter the meaning of a piece of knowledge. Therefore, integrating temporal information into the attention mechanism is one of the research directions we aim to pursue to ensure the semantic accuracy of the knowledge graph.
+
+For the rule-based method AnyBURL, the reinforcement learning branch has recently seen significant progress, and the authors Meilicke, Christian and Chekol \cite{meilicke2020reinforced} have recently proposed a study to optimize the AnyBURL method using reinforcement learning. We also intend to explore this direction and aim to report our findings in the near future.

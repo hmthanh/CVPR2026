@@ -1,0 +1,27 @@
+name: Build LaTeX and Deploy PDF to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install LaTeX
+        run: sudo apt-get update && sudo apt-get install -y texlive-full
+
+      - name: Compile LaTeX
+        run: pdflatex -interaction=nonstopmode main.tex
+
+      - name: Upload PDF to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          keep_files: true
